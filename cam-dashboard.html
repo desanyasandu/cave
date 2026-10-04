@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESP32-CAM AI Vision · Tactical Obstacle Detection Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ============================================================
+       CLAYMORPHISM DESIGN SYSTEM & MODERN CSS TOKENS
+       ============================================================ */
+    :root {
+      --clay-bg: #eef2f7;
+      --clay-surface: #ffffff;
+      --clay-surface-trans: rgba(255, 255, 255, 0.88);
+      --clay-inset: #e2e8f0;
+      --text-main: #1e293b;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
+      --primary: #4f46e5;
+      --primary-light: #818cf8;
+      --primary-glow: rgba(79, 70, 229, 0.25);
+      --emerald: #10b981;
+      --emerald-light: rgba(16, 185, 129, 0.18);
+      --amber: #f59e0b;
+      --amber-light: rgba(245, 158, 11, 0.18);
+      --rose: #f43f5e;
+      --rose-light: rgba(244, 63, 94, 0.18);
+
+      --clay-shadow-panel:
+        8px 14px 28px rgba(166, 178, 196, 0.45),
+        -6px -6px 16px rgba(255, 255, 255, 0.95),
+        inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+
+      --clay-shadow-btn:
+        4px 6px 14px rgba(166, 178, 196, 0.4),
+        -3px -3px 8px rgba(255, 255, 255, 0.9),
+        inset 1px 1px 1px rgba(255, 255, 255, 0.8);
+
+      --clay-shadow-inset:
+        inset 3px 3px 6px rgba(166, 178, 196, 0.35),
+        inset -3px -3px 6px rgba(255, 255, 255, 0.9);
+
+      --radius-panel: 22px;
+      --radius-card: 16px;
+      --radius-pill: 50px;
+    }
+
+    body.dark-mode {
+      --clay-bg: #090d16;
+      --clay-surface: #131b2e;
+      --clay-surface-trans: rgba(19, 27, 46, 0.90);
+      --clay-inset: #0e1424;
+      --text-main: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --primary: #6366f1;
+      --primary-light: #a5b4fc;
+      --primary-glow: rgba(99, 102, 241, 0.3);
+
+      --clay-shadow-panel:
+        8px 14px 32px rgba(0, 0, 0, 0.65),
+        -4px -4px 14px rgba(35, 48, 77, 0.35),
+        inset 1px 1px 2px rgba(255, 255, 255, 0.08);
+
+      --clay-shadow-btn:
+        4px 6px 14px rgba(0, 0, 0, 0.55),
+        -2px -2px 6px rgba(35, 48, 77, 0.3),
+        inset 1px 1px 1px rgba(255, 255, 255, 0.08);
+
+      --clay-shadow-inset:
+        inset 3px 3px 6px rgba(0, 0, 0, 0.6),
+        inset -3px -3px 6px rgba(35, 48, 77, 0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--clay-bg);
+      color: var(--text-main);
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      transition: background 0.3s ease, color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* === TOP BAR (HEADER) === */
+    .top-bar {
+      position: sticky;
+      top: 14px;
+      margin: 14px 20px 0 20px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 20px;
+      background: var(--clay-surface);
+      border-radius: var(--radius-panel);
+      box-shadow: var(--clay-shadow-panel);
+      border: 1.5px solid rgba(255, 255, 255, 0.8);
+      z-index: 40;
+    }
+    body.dark-mode .top-bar { border-color: rgba(255, 255, 255, 0.08); }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      width: 42px; height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 3px 5px 12px rgba(59, 130, 246, 0.35), inset 2px 2px 3px rgba(255, 255, 255, 0.8);
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .brand-title span { color: var(--primary); }
+
+    .brand-sub {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .status-ping {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--emerald);
+      box-shadow: 0 0 0 3px var(--emerald-light);
+      display: inline-block;
+      animation: ping-pulse 2s infinite ease-in-out;
+    }
+    .status-ping.waiting {
+      background: var(--amber);
+      box-shadow: 0 0 0 3px var(--amber-light);
+    }
+    .status-ping.error {
+      background: var(--rose);
+      box-shadow: 0 0 0 3px var(--rose-light);
+    }
+    @keyframes ping-pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.3); opacity: 0.7; }
+    }
+
+    /* Navigation Switcher Pill */
+    .nav-switcher {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--clay-inset);
+      padding: 5px 7px;
+      border-radius: var(--radius-pill);
+      box-shadow: var(--clay-shadow-inset);
+    }
+
+    .nav-pill-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .nav-pill-btn:hover { color: var(--primary); }
+    .nav-pill-btn.active {
+      background: var(--clay-surface);
+      color: var(--primary);
+      box-shadow: 3px 5px 12px rgba(79, 70, 229, 0.2), inset 1px 1px 2px #fff;
+      font-weight: 700;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .metric-chip {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: var(--radius-pill);
+      background: var(--clay-inset);
+      box-shadow: var(--clay-shadow-inset);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .metric-chip .val { color: var(--primary); font-weight: 700; }
+
+    .icon-hud-btn {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: var(--clay-surface);
+      color: var(--text-main);
+      box-shadow: var(--clay-shadow-btn);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .icon-hud-btn:hover { transform: translateY(-2px) scale(1.05); }
+
+    /* === MAIN LAYOUT CONTAINER === */
+    .dashboard-container {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 20px;
+      padding: 20px;
+      flex: 1;
+    }
+
+    @media (max-width: 1080px) {
+      .dashboard-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* === VIDEO VIEWPORT HERO PANEL === */
+    .viewport-panel {
+      background: var(--clay-surface);
+      border-radius: var(--radius-panel);
+      box-shadow: var(--clay-shadow-panel);
+      border: 1.5px solid rgba(255, 255, 255, 0.8);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+    }
+    body.dark-mode .viewport-panel { border-color: rgba(255, 255, 255, 0.08); }
+
+    .viewport-header {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--clay-inset);
+    }
+
+    .feed-mode-tabs {
+      display: flex;
+      gap: 6px;
+      background: var(--clay-inset);
+      padding: 4px 6px;
+      border-radius: var(--radius-pill);
+      box-shadow: var(--clay-shadow-inset);
+    }
+
+    .feed-tab {
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .feed-tab.active {
+      background: var(--clay-surface);
+      color: var(--primary);
+      box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.1);
+      font-weight: 700;
+    }
+
+    /* Video Frame Canvas Screen */
+    .video-screen {
+      position: relative;
+      flex: 1;
+      min-height: 480px;
+      background: #05070e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .video-element {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      image-rendering: auto;
+    }
+
+    /* Tactical On-Screen Decision HUD */
+    .screen-hud-overlay {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .decision-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      transition: all 0.3s ease;
+    }
+    .decision-badge.go {
+      background: rgba(16, 185, 129, 0.88);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    .decision-badge.stop {
+      background: rgba(244, 63, 94, 0.92);
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      animation: pulse-danger 1s infinite alternate;
+    }
+    @keyframes pulse-danger {
+      from { transform: scale(1); }
+      to { transform: scale(1.04); box-shadow: 0 0 20px rgba(244, 63, 94, 0.8); }
+    }
+
+    .stats-overlay-cluster {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      align-items: flex-end;
+    }
+
+    .hud-tag {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(8px);
+      padding: 5px 10px;
+      border-radius: 8px;
+      color: #e2e8f0;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    /* Screen Bottom Quick Controls */
+    .screen-controls {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(15, 23, 42, 0.82);
+      backdrop-filter: blur(12px);
+      padding: 8px 16px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      z-index: 10;
+    }
+
+    .ctrl-pill-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      border: none;
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .ctrl-pill-btn:hover {
+      background: rgba(255, 255, 255, 0.28);
+      transform: translateY(-1px);
+    }
+    .ctrl-pill-btn.flash.active {
+      background: #f59e0b;
+      color: #000000;
+      box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+    }
+    .ctrl-pill-btn.status.active {
+      background: #f43f5e;
+      color: #ffffff;
+      box-shadow: 0 0 14px rgba(244, 63, 94, 0.6);
+    }
+
+    /* === SIDE DECK (TELEMETRY & CONTROLS) === */
+    .side-deck {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .deck-card {
+      background: var(--clay-surface);
+      border-radius: var(--radius-card);
+      box-shadow: var(--clay-shadow-panel);
+      border: 1.5px solid rgba(255, 255, 255, 0.8);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    body.dark-mode .deck-card { border-color: rgba(255, 255, 255, 0.08); }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .card-title .badge {
+      font-size: 10px;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      background: var(--primary-glow);
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    /* Metrics Grid */
+    .data-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .data-box {
+      background: var(--clay-inset);
+      border-radius: 12px;
+      padding: 10px 12px;
+      box-shadow: var(--clay-shadow-inset);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .data-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .data-value {
+      font-size: 16px;
+      font-weight: 800;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-main);
+    }
+    .data-value.good { color: var(--emerald); }
+    .data-value.warn { color: var(--amber); }
+    .data-value.danger { color: var(--rose); }
+
+    /* Danger Gauge Bar */
+    .gauge-track {
+      width: 100%;
+      height: 8px;
+      background: var(--clay-inset);
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: var(--clay-shadow-inset);
+      margin-top: 4px;
+    }
+    .gauge-fill {
+      height: 100%;
+      width: 0%;
+      background: var(--emerald);
+      border-radius: 4px;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+    .gauge-fill.warn { background: var(--amber); }
+    .gauge-fill.danger { background: var(--rose); }
+
+    /* Sliders and Range Controls */
+    .control-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .slider-header span.val {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--primary);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: var(--clay-inset);
+      border-radius: 3px;
+      box-shadow: var(--clay-shadow-inset);
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--primary);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.4);
+    }
+
+    /* Buttons */
+    .deck-btn-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .clay-btn {
+      flex: 1;
+      padding: 10px;
+      border-radius: var(--radius-card);
+      border: none;
+      background: var(--clay-surface);
+      color: var(--text-main);
+      box-shadow: var(--clay-shadow-btn);
+      font-family: 'Outfit', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .clay-btn:hover { transform: translateY(-1px); color: var(--primary); }
+    .clay-btn:active { transform: translateY(1px); }
+    .clay-btn.primary {
+      background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+      color: #ffffff;
+      box-shadow: 3px 5px 14px rgba(79, 70, 229, 0.35);
+    }
+
+    /* Snapshots Gallery */
+    .gallery-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .gallery-item {
+      width: 80px; height: 60px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      border: 1.5px solid var(--clay-inset);
+      cursor: pointer;
+      position: relative;
+    }
+    .gallery-item img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: rgba(15, 23, 42, 0.9);
+      color: #ffffff;
+      padding: 10px 20px;
+      border-radius: var(--radius-pill);
+      font-size: 13px;
+      font-weight: 600;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 100;
+    }
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MISSION CONTROL TOP BAR -->
+  <header class="top-bar">
+    <div class="brand-section">
+      <div class="brand-badge">📹</div>
+      <div class="brand-info">
+        <div class="brand-title">
+          ESP32-CAM <span>· VISION AI</span>
+        </div>
+        <div class="brand-sub">
+          <span class="status-ping" id="statusDot"></span>
+          <span id="statusText">Connecting Stream…</span>
+          <span style="opacity: 0.4;">|</span>
+          <span id="pingVal">--ms</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD TOGGLE NAVIGATION -->
+    <nav class="nav-switcher">
+      <a href="cave-ai.html" class="nav-pill-btn" title="Switch to Tactical SLAM & Mission Control HUD">
+        <span>🗺️</span> SLAM HUD
+      </a>
+      <a href="cam-dashboard.html" class="nav-pill-btn active" title="Active: ESP32-CAM AI Vision Dashboard">
+        <span>📹</span> Camera Vision
+      </a>
+    </nav>
+
+    <!-- RIGHT HEADER METRICS & CONTROLS -->
+    <div class="header-actions">
+      <div class="metric-chip">
+        <span>FPS</span>
+        <span class="val" id="headerFps">0.0</span>
+      </div>
+      <div class="metric-chip">
+        <span>UDP</span>
+        <span class="val" style="color:var(--emerald);">:4210</span>
+      </div>
+      <button class="icon-hud-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode">🌙</button>
+    </div>
+  </header>
+
+  <!-- MAIN DASHBOARD CONTENT -->
+  <main class="dashboard-container">
+
+    <!-- HERO VIDEO VIEWPORT -->
+    <section class="viewport-panel">
+      <div class="viewport-header">
+        <div class="feed-mode-tabs">
+          <button class="feed-tab active" data-feed="annotated">🎯 AI Corridor</button>
+          <button class="feed-tab" data-feed="raw">📷 Raw Feed</button>
+          <button class="feed-tab" data-feed="mask">⬛ Obstacle Mask</button>
+        </div>
+        <span class="badge" id="corridorResolution">QVGA 320×240</span>
+      </div>
+
+      <div class="video-screen">
+        <img id="videoStream" class="video-element" src="http://127.0.0.1:5000/video_feed" alt="ESP32-CAM Live Feed" crossorigin="anonymous">
+
+        <!-- ON-SCREEN DECISION HUD OVERLAY -->
+        <div class="screen-hud-overlay">
+          <div class="decision-badge go" id="decisionBadge">
+            <span>🟢</span> <span id="decisionText">CLEAR (GO)</span>
+          </div>
+          <div class="stats-overlay-cluster">
+            <div class="hud-tag" id="hudReason">Corridor Clear</div>
+            <div class="hud-tag" id="hudObsCoverage">Hazard Area: 0.0%</div>
+          </div>
+        </div>
+
+        <!-- ON-SCREEN QUICK CONTROLS -->
+        <div class="screen-controls">
+          <button class="ctrl-pill-btn flash" id="btnFlashToggle" title="Toggle ESP32-CAM Flashlight">
+            <span>⚡</span> Flashlight
+          </button>
+          <button class="ctrl-pill-btn status" id="btnStatusToggle" title="Toggle ESP32 Status LED">
+            <span>🚨</span> Status LED
+          </button>
+          <button class="ctrl-pill-btn" id="btnSnapshot" title="Capture high-resolution snapshot">
+            <span>📸</span> Snapshot
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT CONTROL & TELEMETRY DECK -->
+    <aside class="side-deck">
+
+      <!-- Corridor Safety & Hazard Analysis -->
+      <div class="deck-card">
+        <div class="card-title">
+          <span>Corridor Clearance</span>
+          <span class="badge" id="corridorBadge">OPTIMAL</span>
+        </div>
+        <div class="data-grid">
+          <div class="data-box">
+            <span class="data-label">Decision</span>
+            <span class="data-value good" id="deckDecision">GO</span>
+          </div>
+          <div class="data-box">
+            <span class="data-label">Obstacle %</span>
+            <span class="data-value" id="deckObsRatio">0.0%</span>
+          </div>
+          <div class="data-box">
+            <span class="data-label">Contours</span>
+            <span class="data-value" id="deckBoxesCount">0</span>
+          </div>
+          <div class="data-box">
+            <span class="data-label">Frame ID</span>
+            <span class="data-value" id="deckFrameId">#0</span>
+          </div>
+        </div>
+        <div class="control-row">
+          <div class="slider-header">
+            <span>Hazard Density vs Stop Threshold (3%)</span>
+            <span class="val" id="hazardGaugeVal">0%</span>
+          </div>
+          <div class="gauge-track">
+            <div class="gauge-fill" id="hazardGaugeFill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hardware Deck & Target IP -->
+      <div class="deck-card">
+        <div class="card-title">
+          <span>ESP32-CAM Hardware</span>
+          <span class="badge">UDP :4211</span>
+        </div>
+        <div class="control-row">
+          <div class="slider-header">
+            <span>Target ESP32 IP</span>
+            <span class="val" id="espIpDisplay">10.160.191.130</span>
+          </div>
+        </div>
+        <div class="deck-btn-group">
+          <button class="clay-btn" id="btnLedOn">💡 Flash ON</button>
+          <button class="clay-btn" id="btnLedOff">🌑 Flash OFF</button>
+          <button class="clay-btn primary" id="btnLedToggle">⚡ Toggle</button>
+        </div>
+      </div>
+
+      <!-- Interactive CV Calibration Studio -->
+      <div class="deck-card">
+        <div class="card-title">
+          <span>Corridor & HSV Tuner</span>
+          <span class="badge">REAL-TIME</span>
+        </div>
+
+        <div class="control-row">
+          <div class="slider-header"><span>Lower Hue (Floor)</span><span class="val" id="valLowerH">18</span></div>
+          <input type="range" id="rngLowerH" min="0" max="179" value="18">
+        </div>
+        <div class="control-row">
+          <div class="slider-header"><span>Upper Hue (Floor)</span><span class="val" id="valUpperH">45</span></div>
+          <input type="range" id="rngUpperH" min="0" max="179" value="45">
+        </div>
+        <div class="control-row">
+          <div class="slider-header"><span>Corridor Top ROI %</span><span class="val" id="valRoiTop">40%</span></div>
+          <input type="range" id="rngRoiTop" min="10" max="80" value="40">
+        </div>
+        <div class="control-row">
+          <div class="slider-header"><span>Stop Threshold %</span><span class="val" id="valStopThresh">3.0%</span></div>
+          <input type="range" id="rngStopThresh" min="0.5" max="15.0" step="0.5" value="3.0">
+        </div>
+
+        <div class="deck-btn-group" style="margin-top: 6px;">
+          <button class="clay-btn" id="btnResetConfig">↺ Defaults</button>
+          <button class="clay-btn primary" id="btnApplyConfig">✓ Apply Live</button>
+        </div>
+      </div>
+
+      <!-- Snapshot Gallery -->
+      <div class="deck-card">
+        <div class="card-title">
+          <span>Inspection Snapshots</span>
+          <span class="badge" id="snapCount">0</span>
+        </div>
+        <div class="gallery-strip" id="snapshotGallery">
+          <div style="font-size:11px; color:var(--text-muted); padding:8px;">No snapshots captured yet</div>
+        </div>
+      </div>
+
+    </aside>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ============================================================
+    // CONFIGURATION & STATE
+    // ============================================================
+    const SERVER_URL = "http://127.0.0.1:5000";
+    let currentFeed = "annotated";
+    const snapshots = [];
+
+    const $ = id => document.getElementById(id);
+    const videoImg = $('videoStream');
+
+    function showToast(msg, type = 'info') {
+      const t = $('toast');
+      t.textContent = msg;
+      t.className = 'toast show';
+      setTimeout(() => { t.className = 'toast'; }, 2500);
+    }
+
+    // ============================================================
+    // THEME HANDLING
+    // ============================================================
+    function applyTheme(isDark) {
+      if (isDark) {
+        document.body.classList.add('dark-mode');
+        $('themeToggleBtn').textContent = '☀️';
+      } else {
+        document.body.classList.remove('dark-mode');
+        $('themeToggleBtn').textContent = '🌙';
+      }
+      localStorage.setItem('cave_theme', isDark ? 'dark' : 'light');
+    }
+
+    const savedTheme = localStorage.getItem('cave_theme') === 'dark';
+    applyTheme(savedTheme);
+
+    $('themeToggleBtn').addEventListener('click', () => {
+      const isDark = !document.body.classList.contains('dark-mode');
+      applyTheme(isDark);
+      showToast(isDark ? '🌙 Tactical Dark Mode Engaged' : '☀️ Light Theme Engaged');
+    });
+
+    // ============================================================
+    // FEED MODE TABS
+    // ============================================================
+    document.querySelectorAll('.feed-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.feed-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentFeed = tab.dataset.feed;
+
+        if (currentFeed === 'annotated') {
+          videoImg.src = `${SERVER_URL}/video_feed?t=${Date.now()}`;
+        } else if (currentFeed === 'raw') {
+          videoImg.src = `${SERVER_URL}/raw_feed?t=${Date.now()}`;
+        } else if (currentFeed === 'mask') {
+          videoImg.src = `${SERVER_URL}/mask_feed?t=${Date.now()}`;
+        }
+        showToast(`Switched to ${tab.textContent}`);
+      });
+    });
+
+    // ============================================================
+    // TELEMETRY POLLING LOOP
+    // ============================================================
+    async function fetchStats() {
+      const t0 = performance.now();
+      try {
+        const resp = await fetch(`${SERVER_URL}/api/stats`);
+        const latency = Math.round(performance.now() - t0);
+        $('pingVal').textContent = `${latency}ms`;
+
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        const data = await resp.json();
+
+        // Update Connection Status
+        const statusDot = $('statusDot');
+        if (data.is_live) {
+          statusDot.className = 'status-ping';
+          $('statusText').textContent = 'UDP Stream Live';
+        } else {
+          statusDot.className = 'status-ping waiting';
+          $('statusText').textContent = 'Awaiting ESP32 (Port 4210)';
+        }
+
+        // Metrics
+        $('headerFps').textContent = data.fps.toFixed(1);
+        $('deckFrameId').textContent = '#' + (data.frame_id >= 0 ? data.frame_id : 0);
+        $('deckObsRatio').textContent = data.obstacle_ratio.toFixed(1) + '%';
+        $('deckBoxesCount').textContent = data.boxes_count;
+        $('hudReason').textContent = data.reason;
+        $('hudObsCoverage').textContent = `Hazard Area: ${data.obstacle_ratio.toFixed(1)}%`;
+        $('espIpDisplay').textContent = data.esp32_ip;
+
+        // Decision styling
+        const isGo = data.decision === 1;
+        const badge = $('decisionBadge');
+        const deckDecision = $('deckDecision');
+        const corridorBadge = $('corridorBadge');
+
+        if (isGo) {
+          badge.className = 'decision-badge go';
+          badge.innerHTML = '<span>🟢</span> <span>CLEAR (GO)</span>';
+          deckDecision.textContent = 'GO';
+          deckDecision.className = 'data-value good';
+          corridorBadge.textContent = 'CLEAR';
+          corridorBadge.style.color = 'var(--emerald)';
+        } else {
+          badge.className = 'decision-badge stop';
+          badge.innerHTML = '<span>🛑</span> <span>OBSTACLE (STOP)</span>';
+          deckDecision.textContent = 'STOP';
+          deckDecision.className = 'data-value danger';
+          corridorBadge.textContent = 'HAZARD';
+          corridorBadge.style.color = 'var(--rose)';
+        }
+
+        // Hazard Gauge
+        const stopLimit = (data.config && data.config.stop_area_frac ? data.config.stop_area_frac * 100 : 3.0);
+        const gaugePct = Math.min(100, Math.round((data.obstacle_ratio / stopLimit) * 100));
+        const gaugeFill = $('hazardGaugeFill');
+        gaugeFill.style.width = gaugePct + '%';
+        $('hazardGaugeVal').textContent = `${data.obstacle_ratio.toFixed(1)}% / ${stopLimit.toFixed(1)}%`;
+
+        if (gaugePct >= 100) gaugeFill.className = 'gauge-fill danger';
+        else if (gaugePct > 50) gaugeFill.className = 'gauge-fill warn';
+        else gaugeFill.className = 'gauge-fill';
+
+        // Hardware LED button states
+        $('btnFlashToggle').classList.toggle('active', data.flash_on);
+        $('btnStatusToggle').classList.toggle('active', data.status_on);
+
+      } catch (err) {
+        $('statusDot').className = 'status-ping error';
+        $('statusText').textContent = 'Server Offline (Run python)';
+        $('headerFps').textContent = '0.0';
+      }
+    }
+
+    setInterval(fetchStats, 600);
+    fetchStats();
+
+    // ============================================================
+    // HARDWARE CONTROL COMMANDS
+    // ============================================================
+    async function sendControl(cmd) {
+      try {
+        const resp = await fetch(`${SERVER_URL}/api/control`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ cmd })
+        });
+        const res = await resp.json();
+        if (res.success) {
+          showToast(`⚡ ESP32: ${cmd} executed`);
+        } else {
+          showToast(`❌ Failed: ${cmd}`);
+        }
+      } catch (e) {
+        showToast('❌ Command network error');
+      }
+    }
+
+    $('btnFlashToggle').addEventListener('click', () => sendControl('LED_TOGGLE'));
+    $('btnStatusToggle').addEventListener('click', () => sendControl('STATUS_ON'));
+    $('btnLedOn').addEventListener('click', () => sendControl('LED_ON'));
+    $('btnLedOff').addEventListener('click', () => sendControl('LED_OFF'));
+    $('btnLedToggle').addEventListener('click', () => sendControl('LED_TOGGLE'));
+
+    // ============================================================
+    // VISION CALIBRATION SLIDERS
+    // ============================================================
+    const rngLowerH = $('rngLowerH');
+    const rngUpperH = $('rngUpperH');
+    const rngRoiTop = $('rngRoiTop');
+    const rngStopThresh = $('rngStopThresh');
+
+    rngLowerH.addEventListener('input', () => $('valLowerH').textContent = rngLowerH.value);
+    rngUpperH.addEventListener('input', () => $('valUpperH').textContent = rngUpperH.value);
+    rngRoiTop.addEventListener('input', () => $('valRoiTop').textContent = rngRoiTop.value + '%');
+    rngStopThresh.addEventListener('input', () => $('valStopThresh').textContent = rngStopThresh.value + '%');
+
+    $('btnApplyConfig').addEventListener('click', async () => {
+      const payload = {
+        lower_yellow: [parseInt(rngLowerH.value), 60, 60],
+        upper_yellow: [parseInt(rngUpperH.value), 255, 255],
+        roi_top_frac: parseFloat(rngRoiTop.value) / 100.0,
+        stop_area_frac: parseFloat(rngStopThresh.value) / 100.0
+      };
+
+      try {
+        await fetch(`${SERVER_URL}/api/config`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        showToast('✓ Vision Calibration Saved');
+      } catch (e) {
+        showToast('❌ Failed to update vision config');
+      }
+    });
+
+    $('btnResetConfig').addEventListener('click', () => {
+      rngLowerH.value = 18; $('valLowerH').textContent = '18';
+      rngUpperH.value = 45; $('valUpperH').textContent = '45';
+      rngRoiTop.value = 40; $('valRoiTop').textContent = '40%';
+      rngStopThresh.value = 3.0; $('valStopThresh').textContent = '3.0%';
+      $('btnApplyConfig').click();
+    });
+
+    // ============================================================
+    // SNAPSHOT CAPTURE
+    // ============================================================
+    $('btnSnapshot').addEventListener('click', () => {
+      const canvas = document.createElement('canvas');
+      canvas.width = videoImg.naturalWidth || 320;
+      canvas.height = videoImg.naturalHeight || 240;
+      const ctx = canvas.getContext('2d');
+      try {
+        ctx.drawImage(videoImg, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL('image/jpeg');
+
+        snapshots.unshift(dataUrl);
+        if (snapshots.length > 8) snapshots.pop();
+
+        $('snapCount').textContent = snapshots.length;
+        const gallery = $('snapshotGallery');
+        gallery.innerHTML = snapshots.map((src, i) => `
+          <div class="gallery-item" onclick="downloadSnapshot('${src}', ${i})" title="Click to download image">
+            <img src="${src}" alt="Snapshot ${i+1}">
+          </div>
+        `).join('');
+
+        showToast('📸 Snapshot Saved to Gallery');
+      } catch (e) {
+        showToast('⚠️ Click image directly or ensure server runs on http://');
+      }
+    });
+
+    window.downloadSnapshot = function(src, idx) {
+      const a = document.createElement('a');
+      a.href = src;
+      a.download = `cave_obs_${Date.now()}_${idx}.jpg`;
+      a.click();
+    };
+  </script>
+</body>
+</html>
