@@ -7,10 +7,14 @@ import cv2
 from flask import Flask, Response, jsonify, request, send_from_directory
 import os
 
-# ---------------- CONFIGURATION ----------------
-ESP32_IP = "10.160.191.130"
-LISTEN_PORT = 4210
-CTRL_PORT = 4211
+# ---------------- CONFIGURATION (FROM arduinoclient1.py) ----------------
+ESP32_IP = "10.151.173.130"        # ESP32-CAM IP
+ARDUINO_IP = "10.151.173.226"      # Arduino UNO R4 WiFi IP
+LISTEN_PORT = 4210                 # ESP32 sends JPEG fragments here
+CTRL_PORT = 4211                   # ESP32 LED control (LED_ON/LED_OFF)
+ARDUINO_PORT = 4212                # Arduino vision decisions
+VISION_MAGIC = 0xC8                # Must match Arduino sketch
+SEND_INTERVAL = 0.033              # Max 30 Hz to Arduino
 MAX_PAYLOAD = 1400
 HDR_SIZE = 4
 
@@ -23,7 +27,8 @@ config = {
     "roi_x2_frac": 0.85,
     "min_obstacle_area_frac": 0.008,
     "stop_area_frac": 0.030,
-    "esp32_ip": ESP32_IP
+    "esp32_ip": ESP32_IP,
+    "arduino_ip": ARDUINO_IP
 }
 
 # ---------------- SHARED STATE ----------------
@@ -40,7 +45,9 @@ state = {
     "flash_state": False,
     "status_led": False,
     "last_packet_time": 0,
-    "frames_received": 0
+    "frames_received": 0,
+    "tx_packets": 0,
+    "arduino_seq": 0
 }
 
 lock = threading.Lock()
@@ -54,8 +61,15 @@ def add_cors_headers(response):
     response.headers['Access-Control-Allow-Methods'] = 'GET,POST,OPTIONS'
     return response
 
-# ---------------- UDP CONTROL SOCKET ----------------
+# ---------------- UDP SOCKETS (ARDUINO + ESP32) ----------------
 ctrl_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+arduino_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
+arduino_seq = 0
+last_send_time = 0
+sent_packets = 0
+last_sent_decision = None
+first_send_done = False
 
 def send_esp_cmd(cmd: str):
     try:
@@ -65,6 +79,33 @@ def send_esp_cmd(cmd: str):
     except Exception as e:
         print("[CTRL ERR]", e)
         return False
+
+def send_vision_decision(decision, confidence=100):
+    """decision: 1=GO, 0=STOP. Rate-limited to SEND_INTERVAL (from arduinoclient1.py)."""
+    global arduino_seq, last_send_time, sent_packets, last_sent_decision, first_send_done
+    now = time.time()
+    if now - last_send_time < SEND_INTERVAL:
+        return
+    last_send_time = now
+    arduino_seq = (arduino_seq + 1) & 0xFF
+    pkt = bytes([VISION_MAGIC, int(decision) & 0xFF,
+                 int(confidence) & 0xFF, arduino_seq])
+    try:
+        arduino_sock.sendto(pkt, (config["arduino_ip"], ARDUINO_PORT))
+        sent_packets += 1
+        with lock:
+            state["tx_packets"] = sent_packets
+            state["arduino_seq"] = arduino_seq
+
+        if not first_send_done:
+            first_send_done = True
+            print(f"[TX] First vision packet sent -> {config['arduino_ip']}:{ARDUINO_PORT}")
+        if decision != last_sent_decision:
+            tag = "STOP" if decision == 0 else "GO  "
+            print(f"[TX] {tag} -> {config['arduino_ip']}:{ARDUINO_PORT} (seq={arduino_seq})")
+            last_sent_decision = decision
+    except Exception as e:
+        print("Arduino send failed:", e)
 
 # ---------------- COMPUTER VISION PIPELINE ----------------
 KERNEL = np.ones((5, 5), np.uint8)
@@ -107,7 +148,7 @@ def analyze_frame(bgr):
         boxes.append((bx, by, bx + bw, by + bh, a))
         total_obs_area += a
 
-    ratio = total_obs_area / roi_area
+    ratio = total_obs_area / roi_area if roi_area > 0 else 0
     decision = 0 if ratio >= config["stop_area_frac"] else 1
     reason = f"Obstacle {ratio*100:.1f}% of corridor" if decision == 0 else "Corridor Clear"
 
@@ -183,6 +224,10 @@ def udp_receiver():
                 img = cv2.imdecode(arr, cv2.IMREAD_COLOR)
                 if img is not None:
                     decision, reason, ratio, n_boxes, annotated, mask = analyze_frame(img)
+                    
+                    # === Send decision to Arduino UNO R4 WiFi over UDP (from arduinoclient1.py) ===
+                    send_vision_decision(decision, confidence=100)
+
                     with lock:
                         state["latest_raw"] = img
                         state["latest_annotated"] = annotated

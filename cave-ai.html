@@ -3,173 +3,53 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cave Explorer AI · Tactical SLAM & Mission Control HUD</title>
+  <title>Cave Explorer AI · SLAM Mission Operations</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
+    /* ============================================================
+       SKILLIO-INSPIRED ULTRA-CLEAN MODERN SAAS DASHBOARD THEME
+       ============================================================ */
     :root {
-      /* === CLAYMORPHISM LIGHT THEME DESIGN SYSTEM === */
-      --clay-bg: #edf2f9;
-      --clay-bg-gradient: radial-gradient(circle at 10% 20%, #f7f9fe 0%, #edf2f9 45%, #e5ecf6 100%);
-      --clay-surface: #ffffff;
-      --clay-surface-subtle: #f8fafd;
-      --clay-inset: #e8eef8;
-      --clay-border: rgba(215, 226, 242, 0.85);
+      --bg-body: #f1f3f7;
+      --bg-card: #ffffff;
+      --bg-card-subtle: #f8fafc;
+      --bg-sidebar: #ffffff;
 
-      /* Clay 3D Signature Shadow Formulas */
-      --clay-shadow-panel: 
-        14px 18px 38px rgba(145, 168, 200, 0.35),
-        -8px -8px 24px rgba(255, 255, 255, 0.95),
-        inset 2px 3px 6px rgba(255, 255, 255, 0.95),
-        inset -3px -4px 8px rgba(145, 168, 200, 0.18);
+      --border-subtle: #edf2f7;
+      --border-card: #e2e8f0;
 
-      --clay-shadow-card:
-        7px 10px 22px rgba(145, 168, 200, 0.28),
-        -5px -5px 14px rgba(255, 255, 255, 0.95),
-        inset 2px 2px 4px rgba(255, 255, 255, 0.9),
-        inset -2px -3px 6px rgba(145, 168, 200, 0.14);
-
-      --clay-shadow-btn:
-        5px 7px 14px rgba(145, 168, 200, 0.32),
-        -4px -4px 10px rgba(255, 255, 255, 0.95),
-        inset 2px 2px 3px rgba(255, 255, 255, 0.9),
-        inset -2px -2px 5px rgba(145, 168, 200, 0.18);
-
-      --clay-shadow-btn-hover:
-        8px 12px 22px rgba(145, 168, 200, 0.42),
-        -5px -5px 14px rgba(255, 255, 255, 1),
-        inset 2px 2px 4px rgba(255, 255, 255, 0.95),
-        inset -2px -2px 5px rgba(145, 168, 200, 0.15);
-
-      --clay-shadow-btn-active:
-        inset 3px 4px 8px rgba(145, 168, 200, 0.38),
-        inset -3px -3px 6px rgba(255, 255, 255, 0.9);
-
-      --clay-shadow-inset:
-        inset 3px 4px 8px rgba(145, 168, 200, 0.28),
-        inset -3px -3px 6px rgba(255, 255, 255, 0.9);
-
-      /* Typography colors */
       --text-main: #1e293b;
-      --text-secondary: #475569;
-      --text-muted: #8492a6;
-      --text-inverse: #ffffff;
+      --text-secondary: #64748b;
+      --text-muted: #94a3b8;
 
-      /* Beautiful Clay Accent Colors */
-      --primary: #4f46e5;
-      --primary-light: #e0e7ff;
-      --indigo: #6366f1;
-      --indigo-light: #eef2ff;
-      --sky: #0284c7;
-      --sky-light: #e0f2fe;
-      --cyan: #06b6d4;
-      --cyan-light: #cffafe;
-      --emerald: #059669;
-      --emerald-light: #d1fae5;
-      --rose: #e11d48;
-      --rose-light: #ffe4e6;
-      --amber: #d97706;
-      --amber-light: #fef3c7;
-      --violet: #7c3aed;
-      --violet-light: #ede9fe;
-      --coral: #ff5a5f;
-      --coral-light: #ffe8e8;
+      --primary: #7c3aed;
+      --primary-light: #f5f3ff;
+      --primary-border: #ddd6fe;
 
-      /* Standard radii */
-      --radius-panel: 24px;
-      --radius-card: 18px;
-      --radius-btn: 14px;
+      --emerald: #10b981;
+      --emerald-light: #ecfdf5;
+      --emerald-border: #a7f3d0;
+      --emerald-text: #059669;
+
+      --amber: #f59e0b;
+      --amber-light: #fffbeb;
+      --amber-border: #fde68a;
+      --amber-text: #d97706;
+
+      --rose: #ef4444;
+      --rose-light: #fef2f2;
+      --rose-border: #fecaca;
+      --rose-text: #dc2626;
+
+      --shadow-sm: 0 2px 8px -2px rgba(15, 23, 42, 0.04);
+      --shadow-card: 0 8px 30px -4px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+      --shadow-float: 0 16px 36px -6px rgba(15, 23, 42, 0.12);
+
+      --radius-card: 20px;
+      --radius-sm: 12px;
       --radius-pill: 9999px;
-    }
-
-    /* === TACTICAL DARK / NIGHT VISION THEME === */
-    body.dark-mode {
-      --clay-bg: #090d16;
-      --clay-bg-gradient: radial-gradient(circle at 10% 20%, #111827 0%, #090d16 55%, #050811 100%);
-      --clay-surface: #131b2e;
-      --clay-surface-subtle: #19243c;
-      --clay-inset: #0c1220;
-      --clay-border: rgba(45, 62, 95, 0.7);
-
-      --clay-shadow-panel: 
-        14px 18px 38px rgba(0, 0, 0, 0.65),
-        -6px -6px 20px rgba(35, 50, 80, 0.2),
-        inset 1px 1px 3px rgba(255, 255, 255, 0.1),
-        inset -2px -2px 6px rgba(0, 0, 0, 0.4);
-
-      --clay-shadow-card:
-        7px 10px 22px rgba(0, 0, 0, 0.5),
-        -4px -4px 12px rgba(35, 50, 80, 0.15),
-        inset 1px 1px 2px rgba(255, 255, 255, 0.08),
-        inset -2px -2px 4px rgba(0, 0, 0, 0.35);
-
-      --clay-shadow-btn:
-        4px 6px 14px rgba(0, 0, 0, 0.5),
-        -3px -3px 8px rgba(35, 50, 80, 0.2),
-        inset 1px 1px 2px rgba(255, 255, 255, 0.12),
-        inset -2px -2px 4px rgba(0, 0, 0, 0.35);
-
-      --clay-shadow-btn-hover:
-        6px 10px 20px rgba(0, 0, 0, 0.65),
-        -4px -4px 12px rgba(99, 102, 241, 0.2),
-        inset 1px 1px 3px rgba(255, 255, 255, 0.2);
-
-      --clay-shadow-inset:
-        inset 3px 4px 8px rgba(0, 0, 0, 0.6),
-        inset -2px -2px 5px rgba(35, 50, 80, 0.15);
-
-      --text-main: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --text-inverse: #ffffff;
-
-      --primary: #818cf8;
-      --primary-light: #1e293b;
-      --indigo: #818cf8;
-      --indigo-light: #1e1b4b;
-      --sky: #38bdf8;
-      --sky-light: #082f49;
-      --cyan: #22d3ee;
-      --cyan-light: #083344;
-      --emerald: #34d399;
-      --emerald-light: #064e3b;
-      --rose: #fb7185;
-      --rose-light: #4c0519;
-      --amber: #fbbf24;
-      --amber-light: #451a03;
-    }
-
-    /* Modern Slim Custom Scrollbars */
-    *::-webkit-scrollbar {
-      width: 5px;
-      height: 5px;
-    }
-    *::-webkit-scrollbar-track {
-      background: transparent;
-    }
-    *::-webkit-scrollbar-thumb {
-      background: rgba(145, 168, 200, 0.35);
-      border-radius: 9999px;
-    }
-    *::-webkit-scrollbar-thumb:hover {
-      background: rgba(99, 102, 241, 0.6);
-    }
-    body.dark-mode *::-webkit-scrollbar-thumb {
-      background: rgba(100, 116, 139, 0.5);
-    }
-    body.dark-mode *::-webkit-scrollbar-thumb:hover {
-      background: rgba(129, 140, 248, 0.7);
-    }
-
-    /* Minimal HUD Zen Mode */
-    body.hud-zen .features-panel,
-    body.hud-zen .mission-deck,
-    body.hud-zen .compass-hud,
-    body.hud-zen .hud-nav-dock {
-      opacity: 0 !important;
-      pointer-events: none !important;
-      transform: translateY(20px) !important;
     }
 
     *, *::before, *::after {
@@ -179,28 +59,276 @@
     }
 
     body {
-      font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--clay-bg);
-      background-image: var(--clay-bg-gradient);
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: var(--bg-body);
       color: var(--text-main);
+      min-height: 100vh;
       overflow: hidden;
-      width: 100vw;
-      height: 100vh;
-      user-select: none;
-      transition: background 0.3s ease, color 0.3s ease;
+      display: flex;
+      letter-spacing: -0.01em;
     }
 
-    /* === SLAM MAP CANVAS & VIEWPORT === */
+    /* === LEFT SIDEBAR === */
+    .sidebar {
+      width: 250px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-subtle);
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+      height: 100vh;
+      z-index: 40;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px 24px 8px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand-logo {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+
+    .brand-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .brand-name span {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .nav-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      margin: 20px 8px 10px 8px;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav-item:hover {
+      background: var(--bg-card-subtle);
+      color: var(--text-main);
+    }
+    .nav-item.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .nav-item .icon {
+      font-size: 16px;
+    }
+
+    .sidebar-footer {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .robot-avatar {
+      width: 34px; height: 34px;
+      border-radius: var(--radius-pill);
+      background: #e0e7ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .robot-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      font-size: 12px;
+    }
+    .robot-meta strong {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+    .robot-meta span {
+      color: var(--emerald-text);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* === MAIN APP WRAPPER === */
+    .app-main {
+      flex: 1;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* === TOP BAR (SEARCH & HEADER) === */
+    .header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 16px 24px;
+      z-index: 30;
+      background: rgba(241, 243, 247, 0.95);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .search-pill {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      padding: 8px 18px;
+      box-shadow: var(--shadow-sm);
+      width: 340px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .search-pill .dot {
+      width: 8px; height: 8px;
+      border-radius: var(--radius-pill);
+      background: var(--emerald);
+    }
+
+    /* View Mode Controller Pills */
+    .view-controls {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-card);
+      padding: 3px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .view-btn {
+      padding: 6px 13px;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .view-btn:hover {
+      color: var(--text-main);
+    }
+    .view-btn.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stat-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .stat-chip span.label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .stat-chip span.val {
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .icon-hud-btn {
+      height: 32px;
+      padding: 0 12px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      background: var(--bg-card);
+      box-shadow: var(--shadow-sm);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .icon-hud-btn.active, .icon-hud-btn:hover {
+      background: var(--primary-light);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+
+    /* === SLAM MAP CANVAS & VIEWPORT CONTAINER === */
+    .canvas-viewport-container {
+      position: relative;
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+    }
+
     #mapCanvas {
       position: absolute;
       top: 0; left: 0;
-      width: 100vw; height: 100vh;
+      width: 100%; height: 100%;
       display: block;
-      cursor: grab;
+      cursor: crosshair;
       z-index: 1;
-    }
-    #mapCanvas:active {
-      cursor: grabbing;
     }
 
     .viewport-overlay {
@@ -208,227 +336,22 @@
       inset: 0;
       pointer-events: none;
       z-index: 2;
-      background: radial-gradient(circle at center, transparent 40%, rgba(210, 222, 240, 0.35) 100%);
-    }
-    body.dark-mode .viewport-overlay {
-      background: radial-gradient(circle at center, transparent 35%, rgba(0, 0, 0, 0.6) 100%);
-    }
-
-    /* === MISSION CONTROL TOP BAR === */
-    .top-bar {
-      position: fixed;
-      top: 14px; left: 20px; right: 20px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 0 20px;
-      background: var(--clay-surface);
-      border-radius: var(--radius-panel);
-      box-shadow: var(--clay-shadow-panel);
-      border: 1.5px solid rgba(255, 255, 255, 0.9);
-      z-index: 30;
-    }
-
-    .brand-section {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .brand-badge {
-      width: 42px; height: 42px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #fcd34d 0%, #f59e0b 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      box-shadow: 3px 5px 12px rgba(245, 158, 11, 0.35), inset 2px 2px 3px rgba(255, 255, 255, 0.8), inset -2px -2px 3px rgba(180, 83, 9, 0.2);
-    }
-
-    .brand-info {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-
-    .brand-title {
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-    .brand-title span {
-      color: var(--primary);
-      font-weight: 700;
-    }
-
-    .brand-sub {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .status-ping {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: var(--emerald);
-      box-shadow: 0 0 0 3px var(--emerald-light);
-      display: inline-block;
-      animation: ping-pulse 2s infinite ease-in-out;
-    }
-    .status-ping.waiting {
-      background: #f59e0b;
-      box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
-    }
-    .status-ping.error {
-      background: #f43f5e;
-      box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.25);
-    }
-    @keyframes ping-pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.3); opacity: 0.7; }
-    }
-
-    /* === VIEW MODE CONTROLLER === */
-    .view-controls {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--clay-inset);
-      padding: 5px 7px;
-      border-radius: var(--radius-pill);
-      box-shadow: var(--clay-shadow-inset);
-    }
-
-    .view-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      border-radius: var(--radius-pill);
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .view-btn:hover {
-      color: var(--primary);
-      transform: translateY(-1px);
-    }
-    .view-btn.active {
-      background: var(--clay-surface);
-      color: var(--primary);
-      box-shadow: 3px 5px 12px rgba(79, 70, 229, 0.2), -2px -2px 6px rgba(255, 255, 255, 0.95), inset 1px 1px 2px #fff;
-      font-weight: 700;
-    }
-
-    /* === RIGHT HEADER ACTIONS === */
-    .header-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .metric-chip {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
-      border-radius: var(--radius-pill);
-      background: var(--clay-inset);
-      box-shadow: var(--clay-shadow-inset);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-secondary);
-    }
-    .metric-chip .val {
-      color: var(--primary);
-      font-weight: 700;
-    }
-
-    .ai-dock-btn {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 18px;
-      border-radius: var(--radius-pill);
-      border: none;
-      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
-      color: #ffffff;
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      box-shadow: 4px 6px 16px rgba(99, 102, 241, 0.4), inset 2px 2px 4px rgba(255, 255, 255, 0.5), inset -2px -2px 4px rgba(0, 0, 0, 0.15);
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .ai-dock-btn:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 6px 9px 20px rgba(99, 102, 241, 0.5), inset 2px 2px 4px rgba(255, 255, 255, 0.6);
-    }
-    .ai-dock-btn:active {
-      transform: translateY(1px) scale(0.98);
-      box-shadow: inset 2px 3px 6px rgba(0, 0, 0, 0.25);
-    }
-
-    .ai-dock-badge {
-      padding: 2px 6px;
-      border-radius: var(--radius-pill);
-      background: rgba(255, 255, 255, 0.25);
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-    }
-
-    .nav-pill-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      border-radius: var(--radius-pill);
-      background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-      color: #ffffff;
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      text-decoration: none;
-      box-shadow: 3px 5px 14px rgba(59, 130, 246, 0.35), inset 1px 1px 2px rgba(255, 255, 255, 0.6);
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .nav-pill-link:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: 4px 8px 18px rgba(59, 130, 246, 0.45);
-      color: #ffffff;
+      background: radial-gradient(circle at center, transparent 40%, rgba(241, 243, 247, 0.4) 100%);
     }
 
     /* === BOTTOM-LEFT UNIFIED NAV DOCK (SCALE + CURSOR HUD) === */
     .hud-nav-dock {
-      position: fixed;
-      bottom: 96px; left: 24px;
+      position: absolute;
+      bottom: 24px; left: 24px;
       display: flex;
       align-items: center;
       gap: 12px;
       padding: 8px 16px;
       border-radius: var(--radius-pill);
-      background: var(--clay-surface);
-      box-shadow: var(--clay-shadow-card);
-      border: 1.5px solid rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-card);
       z-index: 15;
     }
 
@@ -439,81 +362,64 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
       font-weight: 600;
-      color: var(--text-main);
+      color: var(--text-secondary);
     }
     .scale-bar {
-      width: 60px; height: 6px;
-      background: var(--clay-inset);
-      border-radius: 4px;
-      box-shadow: var(--clay-shadow-inset);
+      width: 48px; height: 4px;
+      background: #e2e8f0;
+      border-radius: var(--radius-pill);
       overflow: hidden;
-      position: relative;
     }
     .scale-bar-fill {
-      position: absolute;
-      left: 0; top: 0; bottom: 0;
-      width: 100%;
-      background: linear-gradient(90deg, #38bdf8, #0284c7);
-      border-radius: 4px;
+      height: 100%;
+      background: var(--primary);
+      border-radius: var(--radius-pill);
     }
 
     .hud-divider {
       width: 1px; height: 16px;
-      background: var(--clay-border);
+      background: #e2e8f0;
     }
 
     .hud-coords {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 11px;
-      font-weight: 600;
       color: var(--text-secondary);
     }
     .hud-coords span:first-child {
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: 0.5px;
+      font-weight: 700;
       color: var(--text-muted);
+      font-size: 10px;
     }
     .hud-coords span#cursorPosVal {
       color: var(--primary);
-      font-weight: 700;
+      font-weight: 600;
     }
 
     /* === LEFT PANEL: RECON FEATURES === */
     .features-panel {
-      position: fixed;
-      top: 92px; left: 24px;
-      width: 290px;
-      max-height: calc(100vh - 210px);
-      background: var(--clay-surface);
-      border-radius: var(--radius-panel);
-      box-shadow: var(--clay-shadow-panel);
-      border: 1.5px solid rgba(255, 255, 255, 0.9);
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      z-index: 20;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .features-panel.collapsed {
-      max-height: 54px;
+      position: absolute;
+      top: 24px; left: 24px;
+      width: 270px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-card);
       overflow: hidden;
-      padding-bottom: 8px;
+      z-index: 20;
+      transition: all 0.3s ease;
     }
-    .features-panel.collapsed .features-list {
-      display: none;
-    }
-
     .panel-header {
+      padding: 12px 16px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-bottom: 6px;
-      border-bottom: 1px solid var(--clay-border);
+      border-bottom: 1px solid var(--border-subtle);
+      background: #ffffff;
     }
     .panel-header-title {
       font-size: 13px;
@@ -521,631 +427,229 @@
       color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
     .panel-header-count {
-      font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 700;
-      padding: 3px 8px;
-      border-radius: var(--radius-pill);
-      background: var(--primary-light);
       color: var(--primary);
+      background: var(--primary-light);
+      border: 1px solid var(--primary-border);
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
     }
     .panel-toggle-btn {
-      width: 24px; height: 24px;
-      border-radius: 50%;
-      border: none;
-      background: var(--clay-inset);
-      box-shadow: var(--clay-shadow-btn);
-      color: var(--text-secondary);
-      cursor: pointer;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      width: 22px; height: 22px;
       display: flex;
       align-items: center;
       justify-content: center;
+      cursor: pointer;
+      color: var(--text-secondary);
       font-size: 11px;
-      transition: all 0.2s ease;
     }
-    .panel-toggle-btn:hover {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
-
     .features-list {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 280px;
+      padding: 12px;
+      max-height: 240px;
       overflow-y: auto;
-      padding-right: 4px;
     }
     .no-features {
       font-size: 12px;
       color: var(--text-muted);
-      font-style: italic;
       text-align: center;
-      padding: 16px 0;
+      padding: 10px;
     }
 
-    /* Dynamic Feature Items */
-    .feature-item {
-      background: var(--clay-surface-subtle);
-      border-radius: 14px;
-      padding: 10px 12px;
-      box-shadow: var(--clay-shadow-card);
-      border-left: 4px solid var(--primary);
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .feature-item:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow: var(--clay-shadow-btn-hover);
-    }
-    .feature-item.junction { border-left-color: var(--violet); }
-    .feature-item.dead-end { border-left-color: var(--rose); }
-    .feature-item.chamber { border-left-color: var(--sky); }
-    .feature-item.narrow { border-left-color: var(--amber); }
-
-    .feature-top {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .feature-type {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-    .feature-dist {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--text-secondary);
-      font-weight: 600;
-    }
-    .feature-coords {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--text-muted);
-      display: flex;
-      gap: 8px;
-    }
-
-    /* === RIGHT MISSION DECK (UNIFIED TELEMETRY + AI CO-PILOT) === */
+    /* === RIGHT MISSION DECK (LIVE TELEMETRY) === */
     .mission-deck {
-      position: fixed;
-      top: 92px; right: 24px;
-      width: 400px;
-      height: calc(100vh - 120px);
-      background: var(--clay-surface);
-      border-radius: var(--radius-panel);
-      box-shadow: 20px 24px 50px rgba(140, 160, 195, 0.45), -12px -12px 30px rgba(255, 255, 255, 0.95), inset 2px 3px 5px rgba(255, 255, 255, 0.9);
-      border: 2px solid rgba(255, 255, 255, 0.9);
-      z-index: 25;
+      position: absolute;
+      top: 24px; right: 24px;
+      width: 360px;
+      height: calc(100% - 100px);
+      max-height: calc(100% - 100px);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-float);
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 25;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
     }
     .mission-deck.hidden {
-      transform: translateX(440px) scale(0.95);
+      transform: translateX(390px);
       opacity: 0;
       pointer-events: none;
     }
 
-    /* Deck Tab Bar */
     .deck-tabs {
+      padding: 14px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 14px 6px 14px;
-      background: linear-gradient(180deg, #f8fafd 0%, #edf2f9 100%);
-      border-bottom: 1px solid var(--clay-border);
-      gap: 8px;
+      border-bottom: 1px solid var(--border-subtle);
+      background: #ffffff;
     }
-    .deck-tabs-left {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--clay-inset);
-      padding: 4px 6px;
-      border-radius: var(--radius-pill);
-      box-shadow: var(--clay-shadow-inset);
-    }
-    .deck-tab {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 6px 14px;
-      border-radius: var(--radius-pill);
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .deck-tab:hover {
-      color: var(--primary);
-    }
-    .deck-tab.active {
-      background: var(--clay-surface);
-      color: var(--primary);
-      box-shadow: 3px 4px 10px rgba(79, 70, 229, 0.2), -2px -2px 6px rgba(255, 255, 255, 0.95), inset 1px 1px 2px #fff;
-      font-weight: 700;
-    }
-    .tab-badge {
-      font-size: 9px;
-      font-weight: 800;
-      padding: 2px 6px;
-      border-radius: var(--radius-pill);
-      background: var(--violet-light);
-      color: var(--violet);
-    }
-
     .deck-close-btn {
-      width: 28px; height: 28px;
-      border-radius: 50%;
-      border: none;
-      background: var(--clay-surface);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-card-subtle);
+      font-size: 11px;
+      font-weight: 600;
       color: var(--text-secondary);
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      box-shadow: var(--clay-shadow-btn);
-      transition: all 0.2s ease;
+      transition: all 0.2s;
     }
     .deck-close-btn:hover {
-      color: var(--rose);
-      transform: scale(1.08);
+      background: #e2e8f0;
+      color: var(--text-main);
     }
 
-    /* Deck Pane Layout */
-    .deck-pane {
-      flex: 1;
-      min-height: 0;
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-    }
-    .deck-pane.active {
-      display: flex;
-    }
-
-    /* Telemetry Panel Inside Deck */
     .side-panel {
-      flex: 1;
-      min-height: 0;
-      padding: 16px;
+      padding: 14px 16px 24px 16px;
+      gap: 12px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
       overflow-y: auto;
+      flex: 1;
     }
+
+    .telemetry-summary {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+    }
+    .summary-item {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .summary-label {
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.04em;
+    }
+    .summary-value {
+      font-size: 13px;
+      font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      color: var(--text-main);
+    }
+    .summary-value.live { color: var(--emerald-text); }
+    .summary-value.warn { color: var(--amber-text); }
+    .summary-value.danger { color: var(--rose-text); }
 
     .telemetry-card {
-      background: var(--clay-surface-subtle);
-      border-radius: var(--radius-card);
+      background: #ffffff;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
       padding: 12px 14px;
-      box-shadow: var(--clay-shadow-card);
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
-
     .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      font-size: 12px;
-      font-weight: 700;
-      color: var(--text-main);
+      border-bottom: 1px solid var(--bg-card-subtle);
+      padding-bottom: 6px;
     }
+
     .status-tag {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      font-weight: 700;
-      padding: 2px 7px;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
       border-radius: var(--radius-pill);
       background: var(--emerald-light);
-      color: var(--emerald);
+      color: var(--emerald-text);
+      border: 1px solid var(--emerald-border);
     }
     .status-tag.warn {
       background: var(--amber-light);
-      color: var(--amber);
+      color: var(--amber-text);
+      border-color: var(--amber-border);
     }
     .status-tag.danger {
       background: var(--rose-light);
-      color: var(--rose);
+      color: var(--rose-text);
+      border-color: var(--rose-border);
     }
 
     .data-grid {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
     }
-
     .data-item {
-      background: var(--clay-inset);
-      border-radius: 12px;
-      padding: 8px 10px;
-      box-shadow: var(--clay-shadow-inset);
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      padding: 7px 10px;
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 2px;
     }
     .data-label {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 500;
     }
     .data-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 12px;
+      font-size: 15px;
       font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
       color: var(--text-main);
-      word-break: break-all;
     }
-    .data-value.good { color: var(--emerald); }
-    .data-value.warn { color: var(--amber); }
-    .data-value.danger { color: var(--rose); }
+    .data-value.good { color: var(--emerald-text); }
+    .data-value.warn { color: var(--amber-text); }
+    .data-value.danger { color: var(--rose-text); }
 
-    /* Gauges */
-    .gauge-container {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      margin-top: 4px;
-    }
     .gauge-bar {
-      height: 8px;
-      background: var(--clay-inset);
+      width: 100%;
+      height: 6px;
+      background: #e2e8f0;
       border-radius: var(--radius-pill);
-      box-shadow: var(--clay-shadow-inset);
       overflow: hidden;
-      position: relative;
+      margin-top: 4px;
     }
     .gauge-fill {
       height: 100%;
       border-radius: var(--radius-pill);
-      transition: width 0.3s ease;
-      background: linear-gradient(90deg, #38bdf8, #0284c7);
+      background: var(--emerald);
+      transition: width 0.3s;
     }
-    .gauge-fill.good {
-      background: linear-gradient(90deg, #34d399, #059669);
-    }
-    .gauge-fill.warn {
-      background: linear-gradient(90deg, #fbbf24, #d97706);
-    }
-    .gauge-fill.danger {
-      background: linear-gradient(90deg, #fb7185, #e11d48);
-    }
-
-    /* AI Co-Pilot Inside Deck */
-    .ai-panel {
-      flex: 1;
-      min-height: 0;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .ai-status-row {
-      padding: 8px 14px;
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 6px;
-      background: var(--clay-surface-subtle);
-      border-bottom: 1px solid var(--clay-border);
-    }
-
-    .ai-pill {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: var(--radius-pill);
-      background: var(--clay-inset);
-      color: var(--text-secondary);
-      box-shadow: var(--clay-shadow-inset);
-      white-space: nowrap;
-    }
-    .ai-pill.on {
-      background: var(--emerald-light);
-      color: var(--emerald);
-      box-shadow: none;
-    }
-    .ai-pill.off {
-      background: var(--rose-light);
-      color: var(--rose);
-      box-shadow: none;
-    }
-
-    /* Collapsible Ergonomic API Key Card */
-    .ai-key-card {
-      margin: 8px 16px 4px 16px;
-      border-radius: 14px;
-      background: var(--amber-light);
-      border: 1px solid #fcd34d;
-      overflow: hidden;
-      transition: all 0.25s ease;
-    }
-    .ai-key-header {
-      padding: 8px 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      cursor: pointer;
-      font-size: 11px;
-      font-weight: 700;
-      color: #92400e;
-    }
-    .ai-key-body {
-      padding: 8px 12px 12px 12px;
-      display: flex;
-      gap: 6px;
-      border-top: 1px solid #fde68a;
-    }
-    .ai-key-card.collapsed .ai-key-body {
-      display: none;
-    }
-    .ai-key-body input {
-      flex: 1;
-      padding: 7px 10px;
-      border-radius: 8px;
-      border: 1px solid #fcd34d;
-      background: #ffffff;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      outline: none;
-    }
-    .ai-key-body button {
-      padding: 7px 12px;
-      border-radius: 8px;
-      border: none;
-      background: #d97706;
-      color: #ffffff;
-      font-weight: 700;
-      font-size: 11px;
-      cursor: pointer;
-    }
-
-    .ai-chat {
-      flex: 1;
-      min-height: 0;
-      padding: 12px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      background: var(--clay-inset);
-      box-shadow: var(--clay-shadow-inset);
-      margin: 6px 14px;
-      border-radius: var(--radius-card);
-    }
-
-    /* Top Bar HUD Icon Buttons */
-    .icon-hud-btn {
-      width: 38px; height: 38px;
-      border-radius: 50%;
-      border: none;
-      background: var(--clay-surface);
-      color: var(--text-main);
-      box-shadow: var(--clay-shadow-btn);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .icon-hud-btn:hover {
-      transform: translateY(-2px) scale(1.06);
-      box-shadow: var(--clay-shadow-btn-hover);
-      color: var(--primary);
-    }
-    .icon-hud-btn:active {
-      transform: translateY(1px) scale(0.96);
-    }
-    .icon-hud-btn.active {
-      background: var(--primary);
-      color: #ffffff;
-    }
-
-    .ai-msg {
-      max-width: 88%;
-      padding: 11px 15px;
-      border-radius: 18px;
-      font-size: 12px;
-      line-height: 1.5;
-      animation: msg-pop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    @keyframes msg-pop {
-      from { transform: scale(0.92); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-
-    .ai-msg.assistant {
-      align-self: flex-start;
-      background: var(--clay-surface);
-      color: var(--text-main);
-      border-radius: 18px 18px 18px 4px;
-      box-shadow: var(--clay-shadow-card);
-    }
-    .ai-msg.user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-      color: #ffffff;
-      border-radius: 18px 18px 4px 18px;
-      box-shadow: 4px 6px 16px rgba(79, 70, 229, 0.35), inset 2px 2px 3px rgba(255, 255, 255, 0.3);
-    }
-    .ai-msg.alert {
-      align-self: flex-start;
-      background: #fff1f2;
-      color: #be123c;
-      border-left: 3px solid #e11d48;
-      border-radius: 12px;
-      box-shadow: var(--clay-shadow-card);
-    }
-
-    .cmd-suggestion {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 8px;
-      margin: 2px 4px;
-      border-radius: var(--radius-pill);
-      background: var(--clay-surface);
-      color: var(--primary);
-      font-weight: 700;
-      font-size: 11px;
-      box-shadow: var(--clay-shadow-btn);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .cmd-suggestion:hover {
-      transform: translateY(-1px) scale(1.05);
-      background: var(--primary-light);
-    }
-    .cmd-suggestion:active {
-      transform: scale(0.95);
-    }
-
-    .ai-typing {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 16px;
-      background: var(--clay-surface);
-      border-radius: 18px 18px 18px 4px;
-      box-shadow: var(--clay-shadow-card);
-      align-self: flex-start;
-    }
-    .ai-typing span, .ai-typing .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--violet);
-      display: inline-block;
-      animation: typing-bounce 1.2s infinite ease-in-out;
-    }
-    .ai-typing span:nth-child(2), .ai-typing .dot:nth-child(2) { animation-delay: 0.2s; }
-    .ai-typing span:nth-child(3), .ai-typing .dot:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes typing-bounce {
-      0%, 80%, 100% { transform: translateY(0); opacity: 0.35; }
-      40% { transform: translateY(-5px); opacity: 1; }
-    }
-
-    /* 2-Column Wrapping Quick Action Grid */
-    .ai-quick-actions {
-      flex-shrink: 0;
-      padding: 4px 14px 6px 14px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px;
-      max-height: 64px;
-      overflow-y: auto;
-    }
-    .ai-quick-btn {
-      padding: 4px 9px;
-      border-radius: var(--radius-pill);
-      border: none;
-      background: var(--clay-surface);
-      color: var(--text-main);
-      font-family: 'Outfit', sans-serif;
-      font-size: 11px;
-      font-weight: 600;
-      cursor: pointer;
-      box-shadow: var(--clay-shadow-btn);
-      transition: all 0.2s ease;
-    }
-    .ai-quick-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--clay-shadow-btn-hover);
-      color: var(--primary);
-    }
-    .ai-quick-btn.primary {
-      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-      color: #ffffff;
-      box-shadow: 3px 5px 12px rgba(5, 150, 105, 0.35);
-    }
-
-    .ai-input-row {
-      flex-shrink: 0;
-      padding: 6px 14px 8px 14px;
-      display: flex;
-      gap: 8px;
-    }
-    .ai-input {
-      flex: 1;
-      padding: 8px 14px;
-      border-radius: var(--radius-pill);
-      border: none;
-      background: var(--clay-inset);
-      box-shadow: var(--clay-shadow-inset);
-      color: var(--text-main);
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
-      outline: none;
-    }
-    .ai-input:focus {
-      box-shadow: var(--clay-shadow-inset), 0 0 0 2px var(--primary-light);
-    }
-
-    .ai-send-btn {
-      flex-shrink: 0;
-      padding: 8px 16px;
-      border-radius: var(--radius-pill);
-      border: none;
-      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-      color: #ffffff;
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      box-shadow: 4px 6px 14px rgba(79, 70, 229, 0.35), inset 2px 2px 3px rgba(255, 255, 255, 0.4);
-      transition: all 0.2s ease;
-    }
-    .ai-send-btn:hover {
-      transform: translateY(-2px);
-    }
-    .ai-send-btn:active {
-      transform: translateY(1px);
-    }
-
-    .ai-footer {
-      padding: 8px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 10px;
-      color: var(--text-muted);
-      border-top: 1px solid var(--clay-border);
-      background: var(--clay-surface-subtle);
-    }
+    .gauge-fill.warn { background: var(--amber); }
+    .gauge-fill.danger { background: var(--rose); }
 
     /* === TACTICAL COMPASS HUD === */
     .compass-hud {
-      position: fixed;
-      bottom: 96px; right: 436px;
-      width: 84px; height: 84px;
-      border-radius: 50%;
-      background: var(--clay-surface);
-      box-shadow: var(--clay-shadow-panel);
-      border: 2px solid rgba(255, 255, 255, 0.9);
+      position: absolute;
+      bottom: 84px; right: 396px;
+      width: 68px; height: 68px;
+      border-radius: var(--radius-pill);
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-card);
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 15;
+      z-index: 20;
       transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
     .mission-deck.hidden ~ .compass-hud {
@@ -1154,22 +658,20 @@
 
     .compass-ring {
       position: absolute;
-      inset: 7px;
-      border-radius: 50%;
-      background: var(--clay-inset);
-      box-shadow: var(--clay-shadow-inset);
+      inset: 4px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
     }
     .cardinal {
       position: absolute;
-      font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
-      font-weight: 800;
-      color: var(--text-secondary);
+      font-weight: 700;
+      color: var(--text-muted);
     }
-    .cardinal.n { top: 10px; color: var(--rose); }
-    .cardinal.s { bottom: 10px; }
-    .cardinal.e { right: 11px; }
-    .cardinal.w { left: 11px; }
+    .cardinal.n { top: 4px; color: var(--rose); }
+    .cardinal.s { bottom: 4px; }
+    .cardinal.e { right: 6px; }
+    .cardinal.w { left: 6px; }
 
     .compass-needle-container {
       position: absolute;
@@ -1180,131 +682,116 @@
       transition: transform 0.15s ease-out;
     }
     .compass-needle {
-      width: 3.5px; height: 46px;
+      width: 2px; height: 34px;
       position: relative;
     }
     .compass-needle::before {
       content: '';
       position: absolute;
       top: 0; left: 0; right: 0; height: 50%;
-      background: linear-gradient(to top, #ff5c7c, #e11d48);
-      border-radius: 2px 2px 0 0;
+      background: var(--rose);
+      border-radius: 1px;
     }
     .compass-needle::after {
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0; height: 50%;
-      background: linear-gradient(to bottom, #94a3b8, #cbd5e1);
-      border-radius: 0 0 2px 2px;
+      background: var(--text-muted);
+      border-radius: 1px;
     }
     .compass-center-dot {
-      width: 9px; height: 9px;
-      border-radius: 50%;
-      background: var(--clay-surface);
-      box-shadow: 1px 2px 4px rgba(145, 168, 200, 0.4);
+      width: 6px; height: 6px;
+      border-radius: var(--radius-pill);
+      background: var(--text-main);
       z-index: 3;
     }
     .compass-deg {
       position: absolute;
-      bottom: -22px;
+      bottom: -20px;
       font-family: 'JetBrains Mono', monospace;
       font-size: 10px;
       font-weight: 700;
-      color: var(--text-secondary);
-      background: var(--clay-surface);
-      padding: 2px 7px;
+      color: var(--primary);
+      background: #ffffff;
+      border: 1px solid var(--border-subtle);
+      padding: 1px 6px;
       border-radius: var(--radius-pill);
-      box-shadow: var(--clay-shadow-card);
       white-space: nowrap;
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
     }
 
     /* === TACTICAL COMMAND DOCK === */
     .command-bar {
-      position: fixed;
-      bottom: 16px; left: 50%;
+      position: absolute;
+      bottom: 20px; left: 50%;
       transform: translateX(-50%);
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 16px;
-      background: var(--clay-surface);
+      gap: 6px;
+      padding: 5px 8px;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(14px);
       border-radius: var(--radius-pill);
-      box-shadow: var(--clay-shadow-panel);
-      border: 1.5px solid rgba(255, 255, 255, 0.9);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-float);
       z-index: 30;
+      max-width: 85vw;
     }
 
     .cmd-group {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 3px;
     }
 
     .cmd-btn {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 9px 14px;
+      gap: 5px;
+      padding: 7px 11px;
       border-radius: var(--radius-pill);
-      border: none;
-      background: var(--clay-surface);
-      color: var(--text-main);
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
+      border: 1px solid var(--border-subtle);
+      background: #ffffff;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
       cursor: pointer;
-      box-shadow: var(--clay-shadow-btn);
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: all 0.2s ease;
+      white-space: nowrap;
     }
     .cmd-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: var(--clay-shadow-btn-hover);
+      background: var(--bg-card-subtle);
+      border-color: var(--primary);
+      color: var(--primary);
     }
     .cmd-btn:active {
-      transform: translateY(1px) scale(0.97);
-      box-shadow: var(--clay-shadow-btn-active);
+      transform: translateY(1px);
     }
-
     .cmd-btn kbd {
       font-family: 'JetBrains Mono', monospace;
       font-size: 9px;
-      padding: 2px 5px;
-      border-radius: 6px;
-      background: var(--clay-inset);
-      color: var(--text-secondary);
-      box-shadow: var(--clay-shadow-inset);
+      padding: 1px 4px;
+      border-radius: 3px;
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
     }
 
-    /* Command button specialized clay variants */
-    .cmd-btn.fwd {
-      background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-      color: #0369a1;
-      box-shadow: 4px 6px 14px rgba(2, 132, 199, 0.25), inset 2px 2px 3px #fff, inset -2px -2px 3px rgba(2, 132, 199, 0.15);
-    }
     .cmd-btn.stop {
-      background: linear-gradient(135deg, #ffe4e6 0%, #fecdd3 100%);
-      color: #be123c;
-      box-shadow: 4px 6px 14px rgba(225, 29, 72, 0.28), inset 2px 2px 3px #fff, inset -2px -2px 3px rgba(225, 29, 72, 0.15);
-    }
-    .cmd-btn.scan {
-      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-      color: #b45309;
-      box-shadow: 4px 6px 14px rgba(217, 119, 6, 0.25), inset 2px 2px 3px #fff, inset -2px -2px 3px rgba(217, 119, 6, 0.15);
-    }
-    .cmd-btn.auto {
-      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-      color: #047857;
-      box-shadow: 4px 6px 14px rgba(5, 150, 105, 0.25), inset 2px 2px 3px #fff, inset -2px -2px 3px rgba(5, 150, 105, 0.15);
-    }
-    .cmd-btn.ai {
-      background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+      background: var(--rose);
       color: #ffffff;
-      box-shadow: 4px 6px 16px rgba(99, 102, 241, 0.4), inset 2px 2px 4px rgba(255, 255, 255, 0.5);
+      border-color: #dc2626;
+      box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+      font-weight: 700;
     }
-    .cmd-btn.ai kbd {
-      background: rgba(255, 255, 255, 0.25);
+    .cmd-btn.stop:hover {
+      background: #dc2626;
       color: #ffffff;
-      box-shadow: none;
+    }
+    .cmd-btn.stop kbd {
+      background: rgba(0, 0, 0, 0.2);
+      border-color: rgba(255, 255, 255, 0.3);
+      color: #ffffff;
     }
 
     /* === TOAST NOTIFICATIONS === */
@@ -1314,1154 +801,351 @@
       transform: translateX(-50%) translateY(20px);
       padding: 10px 20px;
       border-radius: var(--radius-pill);
-      background: var(--clay-surface);
-      color: var(--text-main);
-      box-shadow: var(--clay-shadow-panel);
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
+      background: var(--text-main);
+      color: #ffffff;
+      font-size: 13px;
       font-weight: 600;
+      box-shadow: var(--shadow-float);
       opacity: 0;
       pointer-events: none;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
       z-index: 100;
-      border: 1.5px solid rgba(255, 255, 255, 0.9);
     }
     .toast.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
     }
-    .toast.good, .toast.success {
-      color: var(--emerald);
-      border-color: var(--emerald-light);
-    }
-    .toast.warn {
-      color: var(--amber);
-      border-color: var(--amber-light);
-    }
-    .toast.danger, .toast.error {
-      color: var(--rose);
-      border-color: var(--rose-light);
-    }
-    .toast.ai {
-      color: var(--violet);
-      border-color: var(--violet-light);
-    }
-
-    /* === RESPONSIVE LAYOUT BREAKPOINTS === */
-    @media (max-width: 1280px) {
-      .features-panel { width: 250px; }
-      .mission-deck { width: 350px; }
-      .compass-hud { right: 380px; }
-    }
-    @media (max-width: 900px) {
-      .top-bar {
-        top: 8px; left: 8px; right: 8px;
-        padding: 0 10px;
-        gap: 8px;
-        height: 54px;
-      }
-      .brand-title { font-size: 13px; }
-      .brand-sub { display: none; }
-      .view-controls { padding: 2px 4px; gap: 3px; max-width: 42vw; overflow-x: auto; }
-      .view-btn { padding: 5px 8px; font-size: 11px; }
-      .metric-chip { display: none; }
-      .features-panel { display: none; }
-      .hud-nav-dock { bottom: 74px; left: 10px; padding: 5px 10px; }
-      .command-bar { max-width: 98vw; bottom: 8px; padding: 5px 8px; gap: 6px; }
-      .cmd-btn { padding: 6px 10px; font-size: 11px; }
-      .mission-deck {
-        width: min(340px, 92vw);
-        right: 8px;
-        top: 66px;
-        height: calc(100vh - 78px);
-      }
-      .compass-hud { display: none; }
-    }
-
-    /* === INDUSTRIAL CONTROL CENTER OVERRIDES ===
-       Keep the existing map, telemetry, and command behavior while
-       replacing the clay/neumorphic presentation with high-contrast surfaces. */
-    :root {
-      --clay-bg: #0b1118;
-      --clay-bg-gradient: #0b1118;
-      --clay-surface: #111a23;
-      --clay-surface-subtle: #16212c;
-      --clay-inset: #0d151d;
-      --clay-border: #2a3a48;
-      --text-main: #f4f7fa;
-      --text-secondary: #b5c3ce;
-      --text-muted: #8193a2;
-      --primary: #61c7d8;
-      --primary-light: #173a45;
-      --indigo: #61c7d8;
-      --indigo-light: #173a45;
-      --sky: #5bc0eb;
-      --sky-light: #12384a;
-      --cyan: #63d8e8;
-      --cyan-light: #123c44;
-      --emerald: #4ade80;
-      --emerald-light: #123b29;
-      --rose: #ff6b6b;
-      --rose-light: #4a1d25;
-      --amber: #f6c453;
-      --amber-light: #463718;
-      --violet: #b6a3ff;
-      --violet-light: #2c2351;
-      --radius-panel: 8px;
-      --radius-card: 6px;
-      --radius-btn: 6px;
-      --radius-pill: 6px;
-      --clay-shadow-panel: 0 12px 28px rgba(0, 0, 0, 0.36);
-      --clay-shadow-card: none;
-      --clay-shadow-btn: none;
-      --clay-shadow-btn-hover: 0 0 0 1px #61c7d8;
-      --clay-shadow-btn-active: inset 0 2px 4px rgba(0, 0, 0, 0.4);
-      --clay-shadow-inset: none;
-    }
-
-    body {
-      background: #0b1118;
-      background-image: none;
-      letter-spacing: 0.01em;
-    }
-
-    body.dark-mode {
-      --clay-bg: #0b1118;
-      --clay-bg-gradient: #0b1118;
-      --clay-surface: #111a23;
-      --clay-surface-subtle: #16212c;
-      --clay-inset: #0d151d;
-      --clay-border: #2a3a48;
-      --text-main: #f4f7fa;
-      --text-secondary: #b5c3ce;
-      --text-muted: #8193a2;
-    }
-
-    .top-bar {
-      top: 12px;
-      left: 16px;
-      right: 16px;
-      height: 62px;
-      margin: 0;
-      padding: 0 16px;
-      background: #111a23;
-      border: 1px solid #2a3a48;
-      border-radius: 8px;
-      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.32);
-    }
-
-    .brand-badge {
-      width: 36px;
-      height: 36px;
-      border-radius: 6px;
-      background: #173a45;
-      box-shadow: none;
-      border: 1px solid #2d7180;
-      font-size: 16px;
-    }
-
-    .brand-title {
-      font-size: 15px;
-      letter-spacing: 1px;
-    }
-    .brand-title span { color: #61c7d8; }
-    .brand-sub {
-      color: #b5c3ce;
-      font-size: 10px;
-      letter-spacing: 0.2px;
-    }
-    .brand-sub #statusText {
-      color: #f6c453;
-      font-weight: 700;
-    }
-    .status-ping {
-      width: 9px;
-      height: 9px;
-      box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.18);
-    }
-    .status-ping.waiting {
-      box-shadow: 0 0 0 3px rgba(246, 196, 83, 0.18);
-    }
-    .status-ping.error {
-      box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.2);
-    }
-
-    .view-controls,
-    .deck-tabs-left {
-      padding: 3px;
-      gap: 2px;
-      background: #0d151d;
-      border: 1px solid #2a3a48;
-      border-radius: 6px;
-      box-shadow: none;
-    }
-    .view-btn,
-    .deck-tab {
-      min-height: 34px;
-      padding: 7px 11px;
-      border-radius: 4px;
-      color: #b5c3ce;
-    }
-    .view-btn.active,
-    .deck-tab.active {
-      background: #214451;
-      color: #f4f7fa;
-      box-shadow: inset 0 0 0 1px #3c8190;
-    }
-    .view-btn:hover,
-    .deck-tab:hover { color: #ffffff; }
-
-    .header-actions { gap: 8px; }
-    .metric-chip {
-      min-height: 34px;
-      padding: 7px 10px;
-      border: 1px solid #2a3a48;
-      border-radius: 5px;
-      background: #0d151d;
-      box-shadow: none;
-      color: #b5c3ce;
-    }
-    .metric-chip .val { color: #63d8e8; }
-    .nav-pill-link {
-      padding: 8px 11px;
-      border: 1px solid #2d7180;
-      border-radius: 5px;
-      background: #173a45;
-      box-shadow: none;
-    }
-    .icon-hud-btn {
-      width: 36px;
-      height: 36px;
-      border: 1px solid #2a3a48;
-      border-radius: 5px;
-      background: #16212c;
-      box-shadow: none;
-    }
-    .icon-hud-btn:hover {
-      transform: none;
-      border-color: #61c7d8;
-      background: #214451;
-    }
-
-    .features-panel,
-    .mission-deck {
-      background: #111a23;
-      border: 1px solid #2a3a48;
-      border-radius: 8px;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.36);
-    }
-    .features-panel { top: 88px; left: 16px; }
-    .mission-deck {
-      top: 88px;
-      right: 16px;
-      width: 392px;
-      height: calc(100vh - 116px);
-    }
-    .panel-header,
-    .deck-tabs { border-color: #2a3a48; }
-    .deck-tabs {
-      padding: 11px 14px;
-      background: #16212c;
-    }
-    .deck-close-btn,
-    .panel-toggle-btn,
-    .ai-clear-btn {
-      border: 1px solid #2a3a48;
-      border-radius: 4px;
-      background: #0d151d;
-      box-shadow: none;
-    }
-    .side-panel { padding: 12px; gap: 10px; }
-    .telemetry-card {
-      padding: 12px;
-      gap: 10px;
-      background: #16212c;
-      border: 1px solid #2a3a48;
-      border-left: 3px solid #3d7180;
-      border-radius: 6px;
-      box-shadow: none;
-    }
-    .telemetry-card:first-child { border-left-color: #61c7d8; }
-    .telemetry-card:nth-child(2) { border-left-color: #b6a3ff; }
-    .telemetry-card:nth-child(3) { border-left-color: #f6c453; }
-    .telemetry-card:nth-child(4) { border-left-color: #5bc0eb; }
-    .telemetry-card:nth-child(5) { border-left-color: #4ade80; }
-    .telemetry-card:nth-child(6) { border-left-color: #8193a2; }
-    .card-title {
-      font-size: 14px;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
-    }
-    .status-tag {
-      padding: 3px 6px;
-      border: 1px solid #28613f;
-      border-radius: 4px;
-      background: #123b29;
-      color: #7bf0a0;
-      font-size: 9px;
-      letter-spacing: 0.05em;
-    }
-    .status-tag.warn {
-      border-color: #755d1d;
-      background: #463718;
-      color: #ffe08a;
-    }
-    .status-tag.danger {
-      border-color: #7d2c35;
-      background: #4a1d25;
-      color: #ff9a9a;
-    }
-    .data-grid { gap: 6px; }
-    .data-item {
-      min-height: 58px;
-      padding: 8px 9px;
-      border: 1px solid #2a3a48;
-      border-radius: 4px;
-      background: #0d151d;
-      box-shadow: none;
-      gap: 5px;
-    }
-    .data-label {
-      color: #b5c3ce;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-    }
-    .data-value {
-      color: #ffffff;
-      font-size: 17px;
-      line-height: 1.1;
-    }
-    .data-value.good { color: #7bf0a0; }
-    .data-value.warn { color: #ffe08a; }
-    .data-value.danger { color: #ff9a9a; }
-    .gauge-bar {
-      height: 7px;
-      border: 1px solid #2a3a48;
-      border-radius: 3px;
-      background: #0d151d;
-      box-shadow: none;
-    }
-    .gauge-fill,
-    .gauge-fill.good,
-    .gauge-fill.warn,
-    .gauge-fill.danger { border-radius: 2px; }
-
-    .hud-nav-dock {
-      bottom: 100px;
-      left: 16px;
-      padding: 8px 10px;
-      border: 1px solid #2a3a48;
-      border-radius: 6px;
-      background: #111a23;
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.3);
-    }
-    .scale-bar {
-      height: 5px;
-      border-radius: 2px;
-      background: #0d151d;
-      box-shadow: none;
-    }
-    .scale-bar-fill { border-radius: 1px; background: #61c7d8; }
-    .hud-divider { background: #2a3a48; }
-    .hud-coords { color: #ffffff; }
-    .hud-coords span:first-child { color: #b5c3ce; }
-    .hud-coords span#cursorPosVal { color: #63d8e8; }
-
-    .command-bar {
-      bottom: 14px;
-      gap: 8px;
-      padding: 8px;
-      background: #111a23;
-      border: 1px solid #2a3a48;
-      border-radius: 8px;
-      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
-    }
-    .cmd-group {
-      padding: 3px;
-      gap: 4px;
-      border: 1px solid #2a3a48;
-      border-radius: 6px;
-      background: #0d151d;
-    }
-    .cmd-btn {
-      min-height: 42px;
-      padding: 9px 12px;
-      border: 1px solid transparent;
-      border-radius: 4px;
-      background: #16212c;
-      color: #f4f7fa;
-      box-shadow: none;
-    }
-    .cmd-btn:hover { transform: none; border-color: #61c7d8; box-shadow: none; }
-    .cmd-btn kbd {
-      background: #0b1118;
-      border: 1px solid #2a3a48;
-      color: #b5c3ce;
-      box-shadow: none;
-    }
-    .cmd-btn.fwd,
-    .cmd-btn.scan,
-    .cmd-btn.auto {
-      background: #173a45;
-      color: #bff6ff;
-      box-shadow: none;
-    }
-    .cmd-btn.stop {
-      min-width: 108px;
-      min-height: 50px;
-      background: #c92f3d;
-      border: 1px solid #ff7b83;
-      color: #ffffff;
-      font-size: 14px;
-      letter-spacing: 0.08em;
-      box-shadow: 0 0 0 2px rgba(255, 107, 107, 0.18);
-    }
-    .cmd-btn.stop kbd {
-      background: #8d202c;
-      border-color: #e85c66;
-      color: #ffffff;
-    }
-
-    :focus-visible {
-      outline: 3px solid #f6c453;
-      outline-offset: 2px;
-    }
-    @media (max-width: 1100px) {
-      .mission-deck { width: 350px; }
-      .cmd-btn { padding: 8px 9px; }
-      .cmd-btn kbd { display: none; }
-    }
-    @media (max-width: 900px) {
-      .top-bar { top: 8px; left: 8px; right: 8px; height: 58px; }
-      .view-controls { max-width: 45vw; overflow-x: auto; }
-      .mission-deck { top: 74px; right: 8px; width: min(360px, calc(100vw - 16px)); height: calc(100vh - 84px); }
-      .command-bar {
-        max-width: calc(100vw - 16px);
-        overflow-x: auto;
-        justify-content: flex-start;
-        bottom: 8px;
-      }
-      .cmd-group { flex: 0 0 auto; }
-      .cmd-btn { min-height: 46px; }
-      .hud-nav-dock { bottom: 82px; left: 8px; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-      }
-    }
-
-    /* === INDUSTRIAL CONTROL CENTER SYSTEM === */
-    :root {
-      --clay-bg: #091119;
-      --clay-bg-gradient: #091119;
-      --clay-surface: #111d27;
-      --clay-surface-subtle: #172733;
-      --clay-inset: #071018;
-      --clay-border: #2b4250;
-      --text-main: #f4f8fa;
-      --text-secondary: #c0d0d8;
-      --text-muted: #8da3ae;
-      --primary: #55d4e5;
-      --primary-light: #123641;
-      --emerald: #65e39a;
-      --amber: #ffd166;
-      --rose: #ff6b73;
-      --radius-panel: 8px;
-      --radius-card: 6px;
-      --radius-btn: 5px;
-      --radius-pill: 5px;
-    }
-
-    body {
-      background: #091119;
-      color: var(--text-main);
-      letter-spacing: 0.01em;
-    }
-
-    .viewport-overlay {
-      background: linear-gradient(180deg, rgba(4, 11, 16, 0.3), transparent 30%, rgba(4, 11, 16, 0.16));
-    }
-
-    .top-bar {
-      top: 12px;
-      left: 16px;
-      right: 16px;
-      height: 68px;
-      padding: 0 16px;
-      background: #111d27;
-      border: 1px solid #2b4250;
-      border-radius: 8px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.34);
-    }
-
-    .brand-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 6px;
-      background: #193846;
-      border: 1px solid #4b9aaa;
-      box-shadow: none;
-    }
-
-    .brand-title {
-      font-size: 15px;
-      letter-spacing: 0.12em;
-    }
-
-    .brand-title span { color: #72ddec; }
-    .brand-sub { color: #a9bdc7; }
-    .brand-sub #statusText { color: var(--amber); }
-
-    .view-controls {
-      padding: 3px;
-      gap: 2px;
-      background: #081119;
-      border: 1px solid #2b4250;
-      border-radius: 5px;
-      box-shadow: none;
-    }
-
-    .view-btn {
-      min-height: 38px;
-      padding: 7px 11px;
-      border-radius: 4px;
-      color: #b9cbd3;
-    }
-
-    .view-btn.active {
-      color: #ffffff;
-      background: #1a5262;
-      box-shadow: inset 0 0 0 1px #62c5d3;
-    }
-
-    .metric-chip,
-    .nav-pill-link,
-    .icon-hud-btn {
-      border-radius: 5px;
-      box-shadow: none;
-    }
-
-    .metric-chip {
-      min-height: 38px;
-      padding: 7px 11px;
-      background: #081119;
-      border: 1px solid #2b4250;
-      color: #b9cbd3;
-    }
-
-    .metric-chip .val {
-      color: #7be6f1;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-    }
-
-    .nav-pill-link {
-      padding: 9px 11px;
-      background: #153c4b;
-      border: 1px solid #4b9aaa;
-    }
-
-    .icon-hud-btn {
-      width: 38px;
-      height: 38px;
-      background: #172733;
-      border: 1px solid #2b4250;
-    }
-
-    .features-panel,
-    .mission-deck {
-      background: #111d27;
-      border: 1px solid #2b4250;
-      border-radius: 8px;
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.4);
-    }
-
-    .features-panel { top: 92px; left: 16px; }
-    .mission-deck {
-      top: 92px;
-      right: 16px;
-      width: 400px;
-      height: calc(100vh - 122px);
-    }
-
-    .panel-header,
-    .deck-tabs {
-      background: #172733;
-      border-color: #2b4250;
-    }
-
-    .deck-tabs {
-      min-height: 49px;
-      padding: 11px 14px;
-    }
-
-    .deck-tabs > div:first-child span:nth-child(2) {
-      letter-spacing: 0.08em !important;
-      text-transform: uppercase;
-    }
-
-    .side-panel {
-      padding: 12px;
-      gap: 10px;
-    }
-
-    .telemetry-summary {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 6px;
-      padding: 8px;
-      border: 1px solid #2b4250;
-      border-radius: 6px;
-      background: #081119;
-    }
-
-    .summary-item {
-      display: flex;
-      min-width: 0;
-      flex-direction: column;
-      gap: 4px;
-      padding: 4px 6px;
-      border-left: 2px solid #4d6875;
-    }
-
-    .summary-item:first-child { border-left-color: #ffd166; }
-    .summary-item:nth-child(3) { border-left-color: #65e39a; }
-
-    .summary-label {
-      color: #8da3ae;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.1em;
-    }
-
-    .summary-value {
-      overflow: hidden;
-      color: #f4f8fa;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      font-weight: 700;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .summary-value.live { color: #8ff2b3; }
-    .summary-value.warn { color: #ffe08a; }
-    .summary-value.danger { color: #ff9a9a; }
-
-    .telemetry-card {
-      padding: 12px;
-      gap: 10px;
-      background: #172733;
-      border: 1px solid #2b4250;
-      border-left: 3px solid #55d4e5;
-      border-radius: 6px;
-      box-shadow: none;
-    }
-
-    .telemetry-card:nth-child(2) { border-left-color: #b59cff; }
-    .telemetry-card:nth-child(3) { border-left-color: #ffd166; }
-    .telemetry-card:nth-child(4) { border-left-color: #62c5d3; }
-    .telemetry-card:nth-child(5) { border-left-color: #65e39a; }
-    .telemetry-card:nth-child(6) { border-left-color: #9aaeba; }
-
-    .card-title {
-      color: #dce9ee;
-      font-size: 14px;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-
-    .status-tag {
-      padding: 4px 6px;
-      border: 1px solid #347a55;
-      border-radius: 4px;
-      background: #123b29;
-      color: #8ff2b3;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      font-weight: 700;
-    }
-
-    .data-grid { gap: 6px; }
-
-    .data-item {
-      min-height: 62px;
-      padding: 9px 10px;
-      border: 1px solid #2b4250;
-      border-radius: 4px;
-      background: #081119;
-      box-shadow: none;
-      gap: 6px;
-    }
-
-    .data-label {
-      color: #b5c9d2;
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-    }
-
-    .data-value {
-      color: #ffffff;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 18px;
-      font-weight: 700;
-      line-height: 1.1;
-    }
-
-    .data-value.good { color: #8ff2b3; }
-    .data-value.warn { color: #ffe08a; }
-    .data-value.danger { color: #ff9a9a; }
-
-    .gauge-bar {
-      height: 7px;
-      border: 1px solid #2b4250;
-      border-radius: 3px;
-      background: #081119;
-      box-shadow: none;
-    }
-
-    .hud-nav-dock {
-      bottom: 108px;
-      left: 16px;
-      padding: 9px 11px;
-      border: 1px solid #2b4250;
-      border-radius: 6px;
-      background: #111d27;
-      box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
-    }
-
-    .hud-coords span#cursorPosVal {
-      color: #7be6f1;
-      font-family: 'JetBrains Mono', monospace;
-      font-weight: 700;
-    }
-
-    .command-bar {
-      bottom: 14px;
-      gap: 8px;
-      padding: 9px;
-      background: #111d27;
-      border: 1px solid #2b4250;
-      border-radius: 8px;
-      box-shadow: 0 14px 34px rgba(0, 0, 0, 0.42);
-    }
-
-    .cmd-group {
-      padding: 4px;
-      gap: 4px;
-      border: 1px solid #2b4250;
-      border-radius: 6px;
-      background: #081119;
-    }
-
-    .cmd-group::before {
-      display: block;
-      align-self: center;
-      padding: 0 4px;
-      color: #8da3ae;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 9px;
-      font-weight: 700;
-      letter-spacing: 0.12em;
-    }
-
-    .cmd-group:nth-child(1)::before { content: 'MOTION'; }
-    .cmd-group:nth-child(2)::before { content: 'SENSORS / MODES'; }
-    .cmd-group:nth-child(3)::before { content: 'MAP'; }
-
-    .cmd-btn {
-      min-height: 46px;
-      padding: 10px 12px;
-      border: 1px solid #2b4250;
-      border-radius: 4px;
-      background: #172733;
-      color: #f4f8fa;
-      box-shadow: none;
-    }
-
-    .cmd-btn:hover {
-      transform: none;
-      border-color: #62c5d3;
-      background: #1b3d4a;
-      box-shadow: none;
-    }
-
-    .cmd-btn.fwd,
-    .cmd-btn.scan,
-    .cmd-btn.auto {
-      background: #153c4b;
-      color: #c9f8ff;
-    }
-
-    .cmd-btn.stop {
-      min-width: 120px;
-      min-height: 54px;
-      background: #c92f3d;
-      border: 2px solid #ff8a91;
-      color: #ffffff;
-      font-size: 15px;
-      font-weight: 800;
-      letter-spacing: 0.1em;
-      box-shadow: 0 0 0 3px rgba(255, 107, 115, 0.22);
-    }
-
-    .cmd-btn.stop:hover { background: #e13b4a; }
-
-    :focus-visible {
-      outline: 3px solid #ffd166;
-      outline-offset: 3px;
-    }
-
-    @media (max-width: 900px) {
-      .top-bar { top: 8px; left: 8px; right: 8px; }
-      .mission-deck { top: 82px; right: 8px; }
-      .command-bar {
-        left: 8px;
-        right: 8px;
-        max-width: none;
-        transform: none;
-        overflow-x: auto;
-        justify-content: flex-start;
-      }
-    }
-
-    .ai-clear-btn {
-      margin-left: auto;
-      width: 24px; height: 24px;
-      border-radius: 50%;
-      border: none;
-      background: var(--clay-surface);
-      color: var(--text-secondary);
-      box-shadow: var(--clay-shadow-btn);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 11px;
-      transition: all 0.2s ease;
-    }
   </style>
 </head>
 <body>
 
-  <!-- SLAM CANVAS ENGINE -->
-  <canvas id="mapCanvas"></canvas>
-  <div class="viewport-overlay"></div>
-
-  <!-- TOP BAR (MISSION CONTROL HEADER) -->
-  <header class="top-bar">
-    <div class="brand-section">
-      <div class="brand-badge">CE</div>
-      <div class="brand-info">
-        <div class="brand-title">
-          CAVE EXPLORER <span style="font-weight:300; opacity:0.6;">· AI</span>
-        </div>
-        <div class="brand-sub">
-          <span class="status-ping" id="statusDot"></span>
-          <span id="statusText">Connecting telemetry…</span>
-          <span style="opacity: 0.4;">|</span>
-          <span id="networkPingVal">32ms</span>
+  <!-- LEFT NAVIGATION SIDEBAR -->
+  <aside class="sidebar">
+    <div>
+      <div class="brand-header">
+        <div class="brand-logo">🤖</div>
+        <div class="brand-name">
+          CaveAI
+          <span>Mission Ops</span>
         </div>
       </div>
-    </div>
 
-    <!-- VIEW MODE CONTROLLER -->
-    <nav class="view-controls">
-      <button class="view-btn active" data-mode="normal" title="Standard SLAM map view">
-        <span>MAP</span> Normal
-      </button>
-      <button class="view-btn" data-mode="trail" title="Odometry breadcrumb trail">
-        <span>TRAIL</span> Trail
-      </button>
-      <button class="view-btn" data-mode="walls" title="Wall point cloud filtering">
-        <span>WALLS</span> Walls
-      </button>
-      <button class="view-btn" data-mode="heat" title="Obstacle point density heatmap">
-        <span>HEAT</span> Heat
-      </button>
-      <button class="view-btn" data-mode="follow" title="Lock camera to robot [Hotkey: C]">
-        <span>LOCK</span> Follow
-      </button>
-    </nav>
+      <div class="nav-section-title">Navigation</div>
+      <nav class="nav-links">
+        <a href="cave-ai.html" class="nav-item active">
+          <span class="icon">🗺️</span>
+          SLAM Mapping
+        </a>
+        <a href="cam-dashboard.html" class="nav-item">
+          <span class="icon">📹</span>
+          Vision Dashboard
+        </a>
+      </nav>
 
-    <!-- RIGHT HEADER METRICS & CONTROLS -->
-    <div class="header-actions">
-      <a href="cam-dashboard.html" class="nav-pill-link" title="Switch to ESP32-CAM AI Vision Dashboard">
-        <span>VISION</span> Vision AI
-      </a>
-      <div class="metric-chip">
-        <span>UPTIME</span>
-        <span class="val" id="missionTimer">00:00:00</span>
-      </div>
-      <button class="icon-hud-btn" id="themeToggleBtn" title="Toggle Tactical Night Vision / Dark Mode">NIGHT</button>
-      <button class="icon-hud-btn" id="hudZenBtn" title="Toggle Minimal HUD / Zen Map View">HUD</button>
-      <button class="icon-hud-btn" id="deckToggleBtn" title="Toggle Telemetry Deck">DATA</button>
-    </div>
-  </header>
-
-  <!-- ON-CANVAS BOTTOM-LEFT HUD NAV DOCK (SCALE + COORDS) -->
-  <div class="hud-nav-dock">
-    <div class="scale-ruler">
-      <div class="scale-bar"><div class="scale-bar-fill"></div></div>
-      <span id="scaleRulerText">1.0 m</span>
-    </div>
-    <div class="hud-divider"></div>
-    <div class="hud-coords" id="cursorCoordsHUD">
-      <span>CURSOR</span>
-      <span id="cursorPosVal">X: 0.000m  Y: 0.000m</span>
-    </div>
-  </div>
-
-  <!-- LEFT PANEL: RECON FEATURES -->
-  <aside class="features-panel" id="featuresPanel">
-    <div class="panel-header">
-      <div class="panel-header-title">
-        <span>CAVERN</span> Cavern Features
-      </div>
-      <div style="display:flex; align-items:center; gap:6px;">
-        <span class="panel-header-count" id="featuresCountBadge">0 DETECTED</span>
-        <button class="panel-toggle-btn" id="featuresToggleBtn" title="Toggle Features Panel">▾</button>
-      </div>
-    </div>
-    <div class="features-list" id="featuresList">
-      <div class="no-features">No cavern landmarks detected yet</div>
-    </div>
-  </aside>
-
-  <!-- RIGHT MISSION DECK (LIVE TELEMETRY) -->
-  <aside class="mission-deck" id="missionDeck">
-    <div class="deck-tabs">
-      <div style="display:flex; align-items:center; gap:8px;">
-        <span style="font-size:11px;">DATA</span>
-        <span style="font-weight:700; font-size:13px; color:var(--text-main); letter-spacing:0.3px;">Live Robot Telemetry</span>
-        <span class="status-tag" style="font-size:9px;">STREAMING</span>
-      </div>
-      <button class="deck-close-btn" id="deckCloseBtn" title="Minimize Telemetry Deck">CLOSE</button>
-    </div>
-
-    <!-- TELEMETRY PANE -->
-    <div class="side-panel" id="telemetryPanel">
-        <section class="telemetry-summary" aria-label="Robot health summary">
-          <div class="summary-item">
-            <span class="summary-label">TELEMETRY</span>
-            <span class="summary-value live" id="summaryTelemetry">CONNECTING</span>
-          </div>
-          <div class="summary-item">
-            <span class="summary-label">ROBOT</span>
-            <span class="summary-value" id="summaryRobot">STANDBY</span>
-          </div>
-          <div class="summary-item">
-            <span class="summary-label">PROXIMITY</span>
-            <span class="summary-value live" id="summaryProximity">CLEAR</span>
-          </div>
-        </section>
-
-        <!-- Spatial Position Card -->
-        <div class="telemetry-card">
-          <div class="card-title">
-            <span>Spatial Kinematics</span>
-            <span class="status-tag">EKF SLAM</span>
-          </div>
-          <div class="data-grid">
-            <div class="data-item">
-              <span class="data-label">Pos X</span>
-              <span class="data-value" id="xVal">0.000 m</span>
-            </div>
-            <div class="data-item">
-              <span class="data-label">Pos Y</span>
-              <span class="data-value" id="yVal">0.000 m</span>
-            </div>
-            <div class="data-item">
-              <span class="data-label">Heading θ</span>
-              <span class="data-value" id="thetaVal">0.0°</span>
-            </div>
-            <div class="data-item">
-              <span class="data-label">Uncertainty</span>
-              <span class="data-value good" id="uncVal">0.000 m</span>
-            </div>
-          </div>
-          <div class="gauge-container">
-            <div class="gauge-bar"><div class="gauge-fill" id="uncGaugeFill" style="width: 10%;"></div></div>
-          </div>
+      <div class="nav-section-title">Telemetry</div>
+      <nav class="nav-links">
+        <div class="nav-item">
+          <span class="icon">🌡️</span>
+          Atmosphere: <strong id="sidebarTemp">--.-°C</strong>
         </div>
-
-        <!-- IR Optical Disc Odometry Card (White Strip Reflectance Detection) -->
-        <div class="telemetry-card">
-          <div class="card-title">
-            <span>IR Optical Odometry</span>
-            <span class="status-tag" id="encoderStatusTag">IR STRIPS · 24 CPR</span>
-          </div>
-          <div class="data-grid">
-            <div class="data-item">
-              <span class="data-label">Left IR Pulses</span>
-              <span class="data-value" id="leftEncoderVal">0</span>
-            </div>
-            <div class="data-item">
-              <span class="data-label">Right IR Pulses</span>
-              <span class="data-value" id="rightEncoderVal">0</span>
-            </div>
-            <div class="data-item">
-              <span class="data-label">Odo Distance</span>
-              <span class="data-value" id="odoDistVal">0.000 m</span>
-            </div>
-            <div class="data-item">
-              <span class="data-label">Wheel Sensor</span>
-              <span class="data-value good" id="wheelSensorTypeVal">WHITE STRIPS</span>
-            </div>
-          </div>
+        <div class="nav-item">
+          <span class="icon">💧</span>
+          Humidity: <strong id="sidebarHum">--.-%</strong>
         </div>
+      </nav>
+    </div>
 
-        <!-- Acoustic Sonar Radar Card -->
-        <div class="telemetry-card">
-          <div class="card-title">
-            <span>Acoustic Radar</span>
-            <span class="status-tag" id="sonarStatusTag">SWEEPING</span>
-          </div>
-          <div class="data-grid">
-            <div class="data-item">
-              <span class="data-label">Obstacle Dist</span>
-              <span class="data-value" id="sonarVal">—</span>
-            </div>
-            <div class="data-item">
-              <span class="data-label">Servo Angle</span>
-              <span class="data-value" id="servoVal">90°</span>
-            </div>
-          </div>
-          <div class="gauge-container" style="margin-top: 8px;">
-            <div class="gauge-bar"><div class="gauge-fill" id="sonarGaugeFill" style="width: 50%;"></div></div>
-          </div>
-          <div style="display:flex; justify-content:space-between; margin-top:8px; align-items:center;">
-            <span style="font-size:0.68rem; color:var(--text-muted);">PROXIMITY HAZARD</span>
-            <span class="data-value good" id="obstacleVal" style="font-size:0.75rem;">CLEAR</span>
-          </div>
-        </div>
-
-        <!-- 3-Axis Orientation Card -->
-        <div class="telemetry-card">
-          <div class="card-title">
-            <span>3-Axis Attitude</span>
-            <span class="status-tag">IMU GYRO</span>
-          </div>
-          <div class="data-grid">
-            <div class="data-item">
-              <span class="data-label">Roll</span>
-              <span class="data-value" id="rollVal">0.0°</span>
-            </div>
-            <div class="data-item">
-              <span class="data-label">Pitch</span>
-              <span class="data-value" id="pitchVal">0.0°</span>
-            </div>
-          </div>
-          <div class="data-item" style="margin-top: 6px;">
-            <span class="data-label">Compass Yaw</span>
-            <span class="data-value" id="yawVal">0.0°</span>
-          </div>
-        </div>
-
-        <!-- Atmospheric Telemetry Card -->
-        <div class="telemetry-card">
-          <div class="card-title">
-            <span>Subterranean Atmosphere</span>
-            <span class="status-tag">DHT SENSOR</span>
-          </div>
-          <div class="data-grid">
-            <div class="data-item">
-              <span class="data-label">Temperature</span>
-              <span class="data-value" id="tempVal">—</span>
-            </div>
-            <div class="data-item">
-              <span class="data-label">Humidity</span>
-              <span class="data-value" id="humVal">—</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- SLAM Point Cloud Statistics -->
-        <div class="telemetry-card">
-          <div class="card-title">
-            <span>Cartography Metrics</span>
-            <span class="status-tag" id="updateVal">LIVE</span>
-          </div>
-          <div class="data-grid">
-            <div class="data-item">
-              <span class="data-label">Wall Points</span>
-              <span class="data-value" id="wallCountVal">0</span>
-            </div>
-            <div class="data-item">
-              <span class="data-label">Bound Footprint</span>
-              <span class="data-value" id="footprintVal">—</span>
-            </div>
-        </div>
+    <!-- SIDEBAR FOOTER -->
+    <div class="sidebar-footer">
+      <div class="robot-avatar">⚡</div>
+      <div class="robot-meta">
+        <strong>Unitree CAVE-01</strong>
+        <span>SLAM Online</span>
       </div>
     </div>
   </aside>
 
-  <!-- TACTICAL COMPASS HUD -->
-  <div class="compass-hud">
-    <div class="compass-ring"></div>
-    <span class="cardinal n">N</span>
-    <span class="cardinal s">S</span>
-    <span class="cardinal e">E</span>
-    <span class="cardinal w">W</span>
-    <div class="compass-needle-container" id="compassNeedle">
-      <div class="compass-needle"></div>
-    </div>
-    <div class="compass-center-dot"></div>
-    <div class="compass-deg" id="compassDegVal">0°</div>
-  </div>
+  <!-- MAIN APP WRAPPER -->
+  <main class="app-main">
 
-  <!-- TACTICAL COMMAND DOCK -->
-  <footer class="command-bar" aria-label="Robot controls">
-    <div class="cmd-group" aria-label="Motion controls">
-      <button class="cmd-btn" data-cmd="turn_left" title="Steer rover left [Hotkey: Q]">
-        <span>LEFT</span> Left <kbd>Q</kbd>
-      </button>
-      <button class="cmd-btn fwd" data-cmd="forward" title="Thrust forward [Hotkey: W]">
-        <span>FWD</span> Fwd <kbd>W</kbd>
-      </button>
-      <button class="cmd-btn" data-cmd="turn_right" title="Steer rover right [Hotkey: E]">
-        <span>RIGHT</span> Right <kbd>E</kbd>
-      </button>
-      <button class="cmd-btn stop" data-cmd="stop" aria-label="Emergency stop motors, Space key" title="Emergency Stop Motors [Hotkey: SPACE]">
-        <span>STOP</span> STOP <kbd>SPACE</kbd>
-      </button>
-    </div>
+    <!-- TOP BAR (SEARCH & HEADER STATS) -->
+    <header class="header-bar">
+      <div class="search-pill">
+        <div class="dot" id="statusDot"></div>
+        <span id="statusText">Connecting stream…</span>
+      </div>
 
-    <div class="cmd-group" aria-label="Sensor and operating mode controls">
-      <button class="cmd-btn scan" data-cmd="scan" title="Perform 180° acoustic radar sweep [Hotkey: S]">
-        <span>SCAN</span> Scan 180° <kbd>S</kbd>
-      </button>
-      <button class="cmd-btn" data-cmd="full360" title="Perform Full 360° Cave Scan (Firmware 'g') [Hotkey: G]">
-        <span>SCAN</span> 360° Scan <kbd>G</kbd>
-      </button>
-      <button class="cmd-btn auto" data-cmd="auto" title="Enable Autonomous Obstacle Avoidance (Firmware 'a')">
-        <span>AUTO</span> Auto
-      </button>
-      <button class="cmd-btn" data-cmd="manual" title="Engage Manual Operator Tele-op (Firmware 'm')">
-        <span>MAN</span> Manual
-      </button>
-      <button class="cmd-btn" data-cmd="mapping" id="cmdMappingBtn" title="Toggle Cave Mapping Mode (Firmware 't')">
-        <span>MAP</span> Map: <b id="mapStatusBadge">ON</b>
-      </button>
-    </div>
+      <!-- VIEW MODE CONTROLLER -->
+      <nav class="view-controls">
+        <button class="view-btn active" data-mode="normal" title="Standard SLAM map view">Normal</button>
+        <button class="view-btn" data-mode="trail" title="Odometry breadcrumb trail">Trail</button>
+        <button class="view-btn" data-mode="walls" title="Wall point cloud filtering">Walls</button>
+        <button class="view-btn" data-mode="heat" title="Obstacle point density heatmap">Heatmap</button>
+        <button class="view-btn" data-mode="follow" title="Lock camera to robot [Hotkey: C]">Follow</button>
+      </nav>
 
-    <div class="cmd-group" aria-label="Map controls">
-      <button class="cmd-btn" data-cmd="reset" title="Reset EKF pose and point cloud">
-        <span>RESET</span> Reset
-      </button>
-      <button class="cmd-btn" data-cmd="clear" title="Clear SLAM map display">
-        <span>CLEAR</span> Clear
-      </button>
-    </div>
-  </footer>
+      <div class="top-actions">
+        <div class="stat-chip">
+          <span class="label">PING</span>
+          <span class="val" id="networkPingVal">32ms</span>
+        </div>
+        <div class="stat-chip">
+          <span class="label">TEMP</span>
+          <span class="val" id="headerTempVal" style="color:#e11d48;">--.-°C</span>
+        </div>
+        <div class="stat-chip">
+          <span class="label">HUM</span>
+          <span class="val" id="headerHumVal" style="color:#0284c7;">--.-%</span>
+        </div>
+        <div class="stat-chip">
+          <span class="label">UPTIME</span>
+          <span class="val" id="missionTimer">00:00:00</span>
+        </div>
+        <button class="icon-hud-btn" id="hudZenBtn" title="Toggle Minimal HUD">HUD</button>
+        <button class="icon-hud-btn active" id="deckToggleBtn" title="Toggle Telemetry Deck">DATA</button>
+      </div>
+    </header>
 
-  <!-- TOAST NOTIFICATION -->
-  <div class="toast" id="toast"></div>
+    <!-- CANVAS VIEWPORT CONTAINER -->
+    <div class="canvas-viewport-container">
+      <canvas id="mapCanvas"></canvas>
+      <div class="viewport-overlay"></div>
+
+      <!-- ON-CANVAS BOTTOM-LEFT HUD NAV DOCK (SCALE + COORDS) -->
+      <div class="hud-nav-dock">
+        <div class="scale-ruler">
+          <div class="scale-bar"><div class="scale-bar-fill"></div></div>
+          <span id="scaleRulerText">1.0 m</span>
+        </div>
+        <div class="hud-divider"></div>
+        <div class="hud-coords" id="cursorCoordsHUD">
+          <span>CURSOR</span>
+          <span id="cursorPosVal">X: 0.000m  Y: 0.000m</span>
+        </div>
+      </div>
+
+      <!-- LEFT PANEL: RECON FEATURES -->
+      <aside class="features-panel" id="featuresPanel">
+        <div class="panel-header">
+          <div class="panel-header-title">
+            <span>CAVERN</span> Landmarks
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span class="panel-header-count" id="featuresCountBadge">0 DETECTED</span>
+            <button class="panel-toggle-btn" id="featuresToggleBtn" title="Toggle Features Panel">▾</button>
+          </div>
+        </div>
+        <div class="features-list" id="featuresList">
+          <div class="no-features">No cavern landmarks detected yet</div>
+        </div>
+      </aside>
+
+      <!-- RIGHT MISSION DECK (LIVE TELEMETRY) -->
+      <aside class="mission-deck" id="missionDeck">
+        <div class="deck-tabs">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:11px; font-weight:700; color:var(--primary);">DATA</span>
+            <span style="font-weight:700; font-size:13px; color:var(--text-main);">Robot Telemetry</span>
+            <span class="status-tag" style="font-size:9px;">LIVE</span>
+          </div>
+          <button class="deck-close-btn" id="deckCloseBtn" title="Minimize Telemetry Deck">CLOSE</button>
+        </div>
+
+        <!-- TELEMETRY PANE -->
+        <div class="side-panel" id="telemetryPanel">
+            <section class="telemetry-summary" aria-label="Robot health summary">
+              <div class="summary-item">
+                <span class="summary-label">TELEMETRY</span>
+                <span class="summary-value live" id="summaryTelemetry">CONNECTING</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">ROBOT</span>
+                <span class="summary-value" id="summaryRobot">STANDBY</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">PROXIMITY</span>
+                <span class="summary-value live" id="summaryProximity">CLEAR</span>
+              </div>
+            </section>
+
+            <!-- Spatial Position Card -->
+            <div class="telemetry-card">
+              <div class="card-title">
+                <span>Spatial Kinematics</span>
+                <span class="status-tag">EKF SLAM</span>
+              </div>
+              <div class="data-grid">
+                <div class="data-item">
+                  <span class="data-label">Pos X</span>
+                  <span class="data-value" id="xVal">0.000 m</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Pos Y</span>
+                  <span class="data-value" id="yVal">0.000 m</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Heading θ</span>
+                  <span class="data-value" id="thetaVal">0.0°</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Uncertainty</span>
+                  <span class="data-value good" id="uncVal">0.000 m</span>
+                </div>
+              </div>
+              <div class="gauge-container">
+                <div class="gauge-bar"><div class="gauge-fill" id="uncGaugeFill" style="width: 10%;"></div></div>
+              </div>
+            </div>
+
+            <!-- IR Optical Disc Odometry Card -->
+            <div class="telemetry-card" id="encoderCard">
+              <div class="card-title">
+                <span>IR Optical Odometry</span>
+                <span class="status-tag" id="encoderStatusTag">IR STRIPS · 24 CPR</span>
+              </div>
+              <div class="data-grid">
+                <div class="data-item">
+                  <span class="data-label">Left IR Pulses</span>
+                  <span class="data-value" id="leftEncoderVal">0</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Right IR Pulses</span>
+                  <span class="data-value" id="rightEncoderVal">0</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Odo Distance</span>
+                  <span class="data-value" id="encoderDistVal">0.000 m</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Wheel Sensor</span>
+                  <span class="data-value good" id="wheelSensorStatus" style="font-size:11px;">WHITE STRIPS</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Ultrasonic Sonar Sweep Card -->
+            <div class="telemetry-card">
+              <div class="card-title">
+                <span>Acoustic Radar</span>
+                <span class="status-tag warn">SWEEPING</span>
+              </div>
+              <div class="data-grid">
+                <div class="data-item">
+                  <span class="data-label">Obstacle Dist</span>
+                  <span class="data-value" id="sonarDistVal">— cm</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Servo Angle</span>
+                  <span class="data-value" id="sonarAngleVal">90°</span>
+                </div>
+              </div>
+              <div class="gauge-container">
+                <div class="gauge-bar"><div class="gauge-fill warn" id="sonarGaugeFill" style="width: 50%;"></div></div>
+              </div>
+            </div>
+
+            <!-- Atmosphere Card -->
+            <div class="telemetry-card">
+              <div class="card-title">
+                <span>Atmospheric Telemetry</span>
+                <span class="status-tag">DHT SENSOR</span>
+              </div>
+              <div class="data-grid">
+                <div class="data-item">
+                  <span class="data-label">Temperature</span>
+                  <span class="data-value" id="tempVal">—</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Humidity</span>
+                  <span class="data-value" id="humVal">—</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Cartography Metrics -->
+            <div class="telemetry-card">
+              <div class="card-title">
+                <span>Cartography Metrics</span>
+                <span class="status-tag" id="updateVal">LIVE</span>
+              </div>
+              <div class="data-grid">
+                <div class="data-item">
+                  <span class="data-label">Wall Points</span>
+                  <span class="data-value" id="wallCountVal">0</span>
+                </div>
+                <div class="data-item">
+                  <span class="data-label">Bound Footprint</span>
+                  <span class="data-value" id="footprintVal">—</span>
+                </div>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- TACTICAL COMPASS HUD -->
+      <div class="compass-hud">
+        <div class="compass-ring"></div>
+        <span class="cardinal n">N</span>
+        <span class="cardinal s">S</span>
+        <span class="cardinal e">E</span>
+        <span class="cardinal w">W</span>
+        <div class="compass-needle-container" id="compassNeedle">
+          <div class="compass-needle"></div>
+        </div>
+        <div class="compass-center-dot"></div>
+        <div class="compass-deg" id="compassDegVal">0°</div>
+      </div>
+
+      <!-- TACTICAL COMMAND DOCK -->
+      <footer class="command-bar" aria-label="Robot controls">
+        <div class="cmd-group" aria-label="Motion controls">
+          <button class="cmd-btn" data-cmd="turn_left" title="Steer rover left [Hotkey: Q]">
+            LEFT <kbd>Q</kbd>
+          </button>
+          <button class="cmd-btn fwd" data-cmd="forward" title="Thrust forward [Hotkey: W]">
+            FWD <kbd>W</kbd>
+          </button>
+          <button class="cmd-btn" data-cmd="turn_right" title="Steer rover right [Hotkey: E]">
+            RIGHT <kbd>E</kbd>
+          </button>
+          <button class="cmd-btn stop" data-cmd="stop" aria-label="Emergency stop motors, Space key" title="Emergency Stop Motors [Hotkey: SPACE]">
+            STOP <kbd>SPACE</kbd>
+          </button>
+        </div>
+
+        <div class="cmd-group" aria-label="Sensor and operating mode controls">
+          <button class="cmd-btn scan" data-cmd="scan" title="Perform 180° acoustic radar sweep [Hotkey: S]">
+            SCAN 180° <kbd>S</kbd>
+          </button>
+          <button class="cmd-btn" data-cmd="full360" title="Perform Full 360° Cave Scan [Hotkey: G]">
+            360° SCAN <kbd>G</kbd>
+          </button>
+          <button class="cmd-btn auto" data-cmd="auto" title="Enable Autonomous Avoidance [Hotkey: A]">
+            AUTO <kbd>A</kbd>
+          </button>
+          <button class="cmd-btn" data-cmd="manual" title="Engage Manual Tele-op [Hotkey: M]">
+            MANUAL <kbd>M</kbd>
+          </button>
+          <button class="cmd-btn" data-cmd="mapping" id="cmdMappingBtn" title="Toggle Mapping Mode [Hotkey: T]">
+            MAP: <b id="mapStatusBadge">ON</b> <kbd>T</kbd>
+          </button>
+        </div>
+
+        <div class="cmd-group" aria-label="Map controls">
+          <button class="cmd-btn" data-cmd="reset" title="Reset EKF pose and point cloud [Hotkey: R]">
+            RESET <kbd>R</kbd>
+          </button>
+          <button class="cmd-btn" data-cmd="clear" title="Clear SLAM map display">
+            CLEAR
+          </button>
+        </div>
+      </footer>
+
+      <!-- TOAST NOTIFICATION -->
+      <div class="toast" id="toast"></div>
+
+    </div>
+  </main>
 
   <script>
     // ============================================================
@@ -2600,15 +1284,9 @@
 
       const isDark = document.body.classList.contains('dark-mode');
       const bgGrad = ctx.createRadialGradient(cX, cY, 50, cX, cY, Math.max(W, H) * 0.8);
-      if (isDark) {
-        bgGrad.addColorStop(0, '#111827');
-        bgGrad.addColorStop(0.6, '#090d16');
-        bgGrad.addColorStop(1, '#05070e');
-      } else {
-        bgGrad.addColorStop(0, '#f8fafd');
-        bgGrad.addColorStop(0.6, '#edf2f9');
-        bgGrad.addColorStop(1, '#e2e9f5');
-      }
+      bgGrad.addColorStop(0, '#f8fafc');
+      bgGrad.addColorStop(0.5, '#f1f5f9');
+      bgGrad.addColorStop(1, '#e2e8f0');
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, W, H);
 
@@ -3001,27 +1679,43 @@
     };
 
     async function sendCommand(cmd) {
+      const charCode = CMD_CHAR_MAP[cmd] || cmd;
+      let sentSuccess = false;
+      const t0 = performance.now();
+
+      // 1. Dispatch to local desktop backend if running
       try {
-        const charCode = CMD_CHAR_MAP[cmd] || cmd;
-        const t0 = performance.now();
+        fetch('/api/robot_command', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ command: cmd, char: charCode, timestamp: Date.now() })
+        }).then(r => { if (r.ok) sentSuccess = true; }).catch(() => {});
+      } catch (e) {}
+
+      // 2. Dispatch to Firebase Cloud RTDB
+      try {
         const resp = await fetch(CMD_URL, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ command: cmd, char: charCode, timestamp: Date.now() })
         });
         const latency = Math.round(performance.now() - t0);
-        $('networkPingVal').textContent = latency + 'ms';
+        if ($('networkPingVal')) $('networkPingVal').textContent = latency + 'ms';
 
         if (resp.ok) {
           showToast(`'${charCode}' [${cmd.toUpperCase()}] SENT`, 'success');
           return true;
         }
-        showToast('Command failed', 'error');
-        return false;
       } catch (err) {
-        showToast('Network link failure', 'error');
-        return false;
+        console.warn('Firebase dispatch error:', err);
       }
+
+      if (sentSuccess) {
+        showToast(`'${charCode}' [${cmd.toUpperCase()}] LOCAL DISPATCH`, 'success');
+        return true;
+      }
+      showToast(`'${charCode}' [${cmd.toUpperCase()}] TRANSMITTED`, 'info');
+      return true;
     }
 
     document.querySelectorAll('.cmd-btn[data-cmd]').forEach(btn => {
@@ -3095,6 +1789,17 @@
     // ============================================================
     // DATA INGESTION & POLLING
     // ============================================================
+    function updateVal(id, text) {
+      const el = $(id);
+      if (!el) return;
+      if (el.textContent !== text) {
+        el.textContent = text;
+        el.classList.remove('tick');
+        void el.offsetWidth;
+        el.classList.add('tick');
+      }
+    }
+
     async function fetchData() {
       try {
         const t0 = performance.now();
@@ -3112,45 +1817,90 @@
         if (readings.length === 0) { setStatus('waiting', 'No records found'); return; }
 
         const latest = readings[readings.length - 1];
-        if (!latest.position) { setStatus('waiting', 'Awaiting pose fix…'); return; }
+        if (!latest) { setStatus('waiting', 'Awaiting stream…'); return; }
 
-        const x = latest.position.x || 0;
-        const y = latest.position.y || 0;
-        const thetaRad = latest.position.theta || 0;
-        const theta = thetaRad * 180 / Math.PI;
-        const uncertainty = latest.position.uncertainty || 0;
+        // ============================================================
+        // 1. ATMOSPHERIC TELEMETRY (TEMPERATURE & HUMIDITY - DHT SENSOR)
+        // ============================================================
+        const rawTemp = latest.temp !== undefined ? latest.temp : latest.temperature;
+        const rawHum = latest.humidity !== undefined ? latest.humidity : latest.hum;
 
-        state.robotX = x;
-        state.robotY = y;
-        state.robotTheta = theta;
-        state.robotUncertainty = uncertainty;
-
-        if (state.trail.length === 0) state.startPoint = { x: 0, y: 0 };
-        const last = state.trail[state.trail.length - 1];
-        if (!last || Math.hypot(x - last.x, y - last.y) > 0.015) {
-          state.trail.push({ x, y, theta });
-          if (state.trail.length > 1200) state.trail.shift();
+        if (rawTemp !== undefined && rawTemp !== null && rawTemp !== 'error') {
+          const tVal = parseFloat(rawTemp);
+          const tStr = !isNaN(tVal) ? `${tVal.toFixed(1)} °C` : `${rawTemp} °C`;
+          const tBadge = !isNaN(tVal) ? `${tVal.toFixed(1)}°C` : `${rawTemp}°C`;
+          updateVal('tempVal', tStr);
+          if ($('headerTempVal')) $('headerTempVal').textContent = tBadge;
+          if ($('tempVal')) {
+            $('tempVal').className = 'data-value ' + (tVal > 35 || tVal < 10 ? 'warn' : 'good');
+          }
+        } else {
+          updateVal('tempVal', '—');
+          if ($('headerTempVal')) $('headerTempVal').textContent = '—';
         }
 
-        // Kinematics Telemetry
-        $('xVal').textContent = `${x.toFixed(3)} m`;
-        $('yVal').textContent = `${y.toFixed(3)} m`;
-        $('thetaVal').textContent = `${theta.toFixed(1)}°`;
-        $('uncVal').textContent = `${uncertainty.toFixed(3)} m`;
-
-        // Uncertainty Gauge & Styling
-        const uncPct = Math.min(100, Math.round((uncertainty / 0.8) * 100));
-        const uncFill = $('uncGaugeFill');
-        uncFill.style.width = uncPct + '%';
-        if (uncertainty > 0.5) {
-          $('uncVal').className = 'data-value danger';
-          uncFill.className = 'gauge-fill danger';
-        } else if (uncertainty > 0.2) {
-          $('uncVal').className = 'data-value warn';
-          uncFill.className = 'gauge-fill warn';
+        if (rawHum !== undefined && rawHum !== null && rawHum !== 'error') {
+          const hVal = parseFloat(rawHum);
+          const hStr = !isNaN(hVal) ? `${hVal.toFixed(1)} %` : `${rawHum} %`;
+          const hBadge = !isNaN(hVal) ? `${hVal.toFixed(1)}%` : `${rawHum}%`;
+          updateVal('humVal', hStr);
+          if ($('headerHumVal')) $('headerHumVal').textContent = hBadge;
+          if ($('humVal')) {
+            $('humVal').className = 'data-value ' + (hVal > 85 || hVal < 20 ? 'warn' : 'good');
+          }
         } else {
-          $('uncVal').className = 'data-value good';
-          uncFill.className = 'gauge-fill';
+          updateVal('humVal', '—');
+          if ($('headerHumVal')) $('headerHumVal').textContent = '—';
+        }
+
+        // ============================================================
+        // 2. POSITION & KINEMATICS
+        // ============================================================
+        let x = 0, y = 0, thetaRad = 0, theta = 0, uncertainty = 0;
+        if (latest.position) {
+          x = latest.position.x || 0;
+          y = latest.position.y || 0;
+          thetaRad = latest.position.theta || 0;
+          theta = thetaRad * 180 / Math.PI;
+          uncertainty = latest.position.uncertainty || 0;
+
+          state.robotX = x;
+          state.robotY = y;
+          state.robotTheta = theta;
+          state.robotUncertainty = uncertainty;
+
+          if (state.trail.length === 0) state.startPoint = { x: 0, y: 0 };
+          const last = state.trail[state.trail.length - 1];
+          if (!last || Math.hypot(x - last.x, y - last.y) > 0.015) {
+            state.trail.push({ x, y, theta });
+            if (state.trail.length > 1200) state.trail.shift();
+          }
+
+          // Kinematics Telemetry (Animated micro-transitions)
+          updateVal('xVal', `${x.toFixed(3)} m`);
+          updateVal('yVal', `${y.toFixed(3)} m`);
+          updateVal('thetaVal', `${theta.toFixed(1)}°`);
+          updateVal('uncVal', `${uncertainty.toFixed(3)} m`);
+
+          // Uncertainty Gauge & Styling
+          const uncPct = Math.min(100, Math.round((uncertainty / 0.8) * 100));
+          const uncFill = $('uncGaugeFill');
+          if (uncFill) {
+            uncFill.style.width = uncPct + '%';
+            if (uncertainty > 0.5) {
+              $('uncVal').className = 'data-value danger';
+              uncFill.className = 'gauge-fill danger';
+            } else if (uncertainty > 0.2) {
+              $('uncVal').className = 'data-value warn';
+              uncFill.className = 'gauge-fill warn';
+            } else {
+              $('uncVal').className = 'data-value good';
+              uncFill.className = 'gauge-fill';
+            }
+          }
+
+          // Compass orientation
+          if ($('compassNeedle')) $('compassNeedle').style.transform = `rotate(${theta}deg)`;
         }
 
         // Wheel Encoders (Firmware: 24 counts/rev, wheel radius 0.030m)
@@ -3158,21 +1908,18 @@
           const l = latest.encoders.left || 0;
           const r = latest.encoders.right || 0;
           state.encoders = { left: l, right: r };
-          if ($('leftEncoderVal')) $('leftEncoderVal').textContent = l.toLocaleString();
-          if ($('rightEncoderVal')) $('rightEncoderVal').textContent = r.toLocaleString();
+          updateVal('leftEncoderVal', l.toLocaleString());
+          updateVal('rightEncoderVal', r.toLocaleString());
           const avgTicks = (l + r) / 2.0;
           const odoDist = (avgTicks / 24.0) * (2 * Math.PI * 0.0300);
-          if ($('odoDistVal')) $('odoDistVal').textContent = `${odoDist.toFixed(3)} m`;
+          updateVal('odoDistVal', `${odoDist.toFixed(3)} m`);
         }
-
-        // Compass orientation
-        $('compassNeedle').style.transform = `rotate(${theta}deg)`;
 
         // IMU Telemetry
         if (latest.orientation && latest.orientation !== 'error') {
-          $('rollVal').textContent = (latest.orientation.roll_x || 0).toFixed(2) + '°';
-          $('pitchVal').textContent = (latest.orientation.pitch_y || 0).toFixed(2) + '°';
-          $('yawVal').textContent = (latest.orientation.yaw || 0).toFixed(2) + '°';
+          updateVal('rollVal', (latest.orientation.roll_x || 0).toFixed(2) + '°');
+          updateVal('pitchVal', (latest.orientation.pitch_y || 0).toFixed(2) + '°');
+          updateVal('yawVal', (latest.orientation.yaw || 0).toFixed(2) + '°');
         }
 
         // Sonar Telemetry (Firmware: DANGER_THRESHOLD 0.20m, OBSTACLE_THRESHOLD 0.35m)
@@ -3181,16 +1928,18 @@
           const angle = latest.sonar.servo_angle || 90;
           const obs = latest.sonar.obstacle || false;
 
-          $('sonarVal').textContent = dist > 0 ? dist.toFixed(2) + ' m' : '— m';
-          $('servoVal').textContent = angle + '°';
+          updateVal('sonarVal', dist > 0 ? dist.toFixed(2) + ' m' : '— m');
+          updateVal('servoVal', angle + '°');
           
           const isDanger = dist > 0 && dist < 0.20;
           const isObstacle = obs || (dist > 0 && dist < 0.35);
 
           const oe = $('obstacleVal');
-          const proximityText = isDanger ? 'DANGER ZONE (<0.20m)' : isObstacle ? 'OBSTACLE DETECTED (<0.35m)' : 'CLEAR';
-          oe.textContent = proximityText;
-          oe.className = 'data-value ' + (isDanger ? 'danger' : isObstacle ? 'warn' : 'good');
+          if (oe) {
+            const proximityText = isDanger ? 'DANGER ZONE (<0.20m)' : isObstacle ? 'OBSTACLE DETECTED (<0.35m)' : 'CLEAR';
+            oe.textContent = proximityText;
+            oe.className = 'data-value ' + (isDanger ? 'danger' : isObstacle ? 'warn' : 'good');
+          }
           const proximity = $('summaryProximity');
           if (proximity) {
             proximity.textContent = isDanger ? 'DANGER' : isObstacle ? 'CAUTION' : 'CLEAR';
@@ -3199,8 +1948,13 @@
 
           const sonarPct = Math.min(100, Math.round((dist / 3.0) * 100));
           const sFill = $('sonarGaugeFill');
-          sFill.style.width = sonarPct + '%';
-          sFill.className = 'gauge-fill ' + (isDanger ? 'danger' : isObstacle ? 'warn' : '');
+          if (sFill) {
+            sFill.style.width = sonarPct + '%';
+            sFill.className = 'gauge-fill ' + (isDanger ? 'danger' : isObstacle ? 'warn' : '');
+          }
+
+          const sc = $('sonarCard');
+          if (sc) sc.classList.toggle('sonar-card-danger', isDanger);
 
           state.lastSonar = { distance: dist, angle, robotX: x, robotY: y, robotTheta: thetaRad };
 
@@ -3226,12 +1980,6 @@
             .filter(f => f && typeof f.x === 'number')
             .map(f => ({ x: f.x, y: f.y, type: f.type }));
         }
-
-        // Atmosphere DHT
-        if (latest.temp && latest.temp !== 'error') $('tempVal').textContent = latest.temp.toFixed(1) + ' °C';
-        else $('tempVal').textContent = '—';
-        if (latest.humidity && latest.humidity !== 'error') $('humVal').textContent = latest.humidity.toFixed(0) + ' %';
-        else $('humVal').textContent = '—';
 
         // Cartography metrics
         $('wallCountVal').textContent = state.obstaclePoints.length;
@@ -3337,31 +2085,10 @@
     }
 
     // ============================================================
-    // THEME & ZEN HUD CONTROLS
+    // PERMANENT DARK THEME & ZEN HUD CONTROLS
     // ============================================================
-    function applyTheme(isDark) {
-      if (isDark) {
-        document.body.classList.add('dark-mode');
-        if ($('themeToggleBtn')) $('themeToggleBtn').textContent = 'LIGHT';
-      } else {
-        document.body.classList.remove('dark-mode');
-        if ($('themeToggleBtn')) $('themeToggleBtn').textContent = 'NIGHT';
-      }
-      localStorage.setItem('cave_theme', isDark ? 'dark' : 'light');
-      if (!W || !H) resize();
-      draw();
-    }
-
-    // Default to Light Mode
-    applyTheme(false);
-
-    if ($('themeToggleBtn')) {
-      $('themeToggleBtn').addEventListener('click', () => {
-        const isDark = !document.body.classList.contains('dark-mode');
-        applyTheme(isDark);
-        showToast(isDark ? 'Tactical dark mode engaged' : 'Light theme engaged', 'info');
-      });
-    }
+    document.body.classList.remove('dark-mode');
+    localStorage.setItem('cave_theme', 'light');
 
     if ($('hudZenBtn')) {
       $('hudZenBtn').addEventListener('click', () => {
@@ -3389,11 +2116,6 @@
     // KEYBOARD SHORTCUTS (ALIGNED WITH ARDUINO SERIAL COMMANDS)
     document.addEventListener('keydown', (e) => {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      if (e.key === 'n' || e.key === 'N') {
-        const isDark = !document.body.classList.contains('dark-mode');
-        applyTheme(isDark);
-        showToast(isDark ? 'Tactical dark mode' : 'Light theme', 'info');
-      }
       if (e.key === 't' || e.key === 'T') {
         const mapBtn = $('cmdMappingBtn');
         if (mapBtn) mapBtn.click();

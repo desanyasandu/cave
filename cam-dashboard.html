@@ -3,287 +3,465 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ESP32-CAM AI Vision · Tactical Obstacle Detection Dashboard</title>
+  <title>Cave Explorer AI · Vision Operations</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     /* ============================================================
-       CLAYMORPHISM DESIGN SYSTEM & MODERN CSS TOKENS
+       SKILLIO-INSPIRED ULTRA-CLEAN MODERN SAAS DASHBOARD THEME
        ============================================================ */
     :root {
-      --clay-bg: #eef2f7;
-      --clay-surface: #ffffff;
-      --clay-surface-trans: rgba(255, 255, 255, 0.88);
-      --clay-inset: #e2e8f0;
+      --bg-body: #f1f3f7;
+      --bg-card: #ffffff;
+      --bg-card-subtle: #f8fafc;
+      --bg-sidebar: #ffffff;
+
+      --border-subtle: #edf2f7;
+      --border-card: #e2e8f0;
+
       --text-main: #1e293b;
       --text-secondary: #64748b;
       --text-muted: #94a3b8;
-      --primary: #4f46e5;
-      --primary-light: #818cf8;
-      --primary-glow: rgba(79, 70, 229, 0.25);
+
+      --primary: #7c3aed;
+      --primary-light: #f5f3ff;
+      --primary-border: #ddd6fe;
+
       --emerald: #10b981;
-      --emerald-light: rgba(16, 185, 129, 0.18);
+      --emerald-light: #ecfdf5;
+      --emerald-border: #a7f3d0;
+      --emerald-text: #059669;
+
       --amber: #f59e0b;
-      --amber-light: rgba(245, 158, 11, 0.18);
-      --rose: #f43f5e;
-      --rose-light: rgba(244, 63, 94, 0.18);
+      --amber-light: #fffbeb;
+      --amber-border: #fde68a;
+      --amber-text: #d97706;
 
-      --clay-shadow-panel:
-        8px 14px 28px rgba(166, 178, 196, 0.45),
-        -6px -6px 16px rgba(255, 255, 255, 0.95),
-        inset 1px 1px 2px rgba(255, 255, 255, 0.9);
+      --rose: #ef4444;
+      --rose-light: #fef2f2;
+      --rose-border: #fecaca;
+      --rose-text: #dc2626;
 
-      --clay-shadow-btn:
-        4px 6px 14px rgba(166, 178, 196, 0.4),
-        -3px -3px 8px rgba(255, 255, 255, 0.9),
-        inset 1px 1px 1px rgba(255, 255, 255, 0.8);
+      --shadow-sm: 0 2px 8px -2px rgba(15, 23, 42, 0.04);
+      --shadow-card: 0 8px 30px -4px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+      --shadow-float: 0 16px 36px -6px rgba(15, 23, 42, 0.12);
 
-      --clay-shadow-inset:
-        inset 3px 3px 6px rgba(166, 178, 196, 0.35),
-        inset -3px -3px 6px rgba(255, 255, 255, 0.9);
-
-      --radius-panel: 22px;
-      --radius-card: 16px;
-      --radius-pill: 50px;
-    }
-
-    body.dark-mode {
-      --clay-bg: #090d16;
-      --clay-surface: #131b2e;
-      --clay-surface-trans: rgba(19, 27, 46, 0.90);
-      --clay-inset: #0e1424;
-      --text-main: #f1f5f9;
-      --text-secondary: #94a3b8;
-      --text-muted: #64748b;
-      --primary: #6366f1;
-      --primary-light: #a5b4fc;
-      --primary-glow: rgba(99, 102, 241, 0.3);
-
-      --clay-shadow-panel:
-        8px 14px 32px rgba(0, 0, 0, 0.65),
-        -4px -4px 14px rgba(35, 48, 77, 0.35),
-        inset 1px 1px 2px rgba(255, 255, 255, 0.08);
-
-      --clay-shadow-btn:
-        4px 6px 14px rgba(0, 0, 0, 0.55),
-        -2px -2px 6px rgba(35, 48, 77, 0.3),
-        inset 1px 1px 1px rgba(255, 255, 255, 0.08);
-
-      --clay-shadow-inset:
-        inset 3px 3px 6px rgba(0, 0, 0, 0.6),
-        inset -3px -3px 6px rgba(35, 48, 77, 0.25);
+      --radius-card: 20px;
+      --radius-sm: 12px;
+      --radius-pill: 9999px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      background: var(--clay-bg);
+      background: var(--bg-body);
       color: var(--text-main);
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
       min-height: 100vh;
       overflow-x: hidden;
-      transition: background 0.3s ease, color 0.3s ease;
       display: flex;
-      flex-direction: column;
+      letter-spacing: -0.01em;
     }
 
-    /* === TOP BAR (HEADER) === */
-    .top-bar {
-      position: sticky;
-      top: 14px;
-      margin: 14px 20px 0 20px;
-      height: 64px;
+    /* === LEFT SIDEBAR === */
+    .sidebar {
+      width: 250px;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-subtle);
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      flex-shrink: 0;
+      min-height: 100vh;
+    }
+
+    .brand-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 8px 24px 8px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand-logo {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #8b5cf6, #6366f1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      font-size: 18px;
+      box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    }
+
+    .brand-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      flex-direction: column;
+      line-height: 1.1;
+    }
+    .brand-name span {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .nav-section-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      margin: 20px 8px 10px 8px;
+      text-transform: uppercase;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--text-secondary);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+    .nav-item:hover {
+      background: var(--bg-card-subtle);
+      color: var(--text-main);
+    }
+    .nav-item.active {
+      background: var(--primary-light);
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .nav-item .icon {
+      font-size: 16px;
+    }
+
+    .sidebar-footer {
+      background: var(--bg-card-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .robot-avatar {
+      width: 34px; height: 34px;
+      border-radius: var(--radius-pill);
+      background: #e0e7ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .robot-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      font-size: 12px;
+    }
+    .robot-meta strong {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+    .robot-meta span {
+      color: var(--emerald-text);
+      font-size: 10px;
+      font-weight: 600;
+    }
+
+    /* === MAIN APP WRAPPER === */
+    .app-main {
+      flex: 1;
+      padding: 24px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 1480px;
+    }
+
+    /* === TOP BAR (SEARCH & HEADER) === */
+    .header-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      padding: 0 20px;
-      background: var(--clay-surface);
-      border-radius: var(--radius-panel);
-      box-shadow: var(--clay-shadow-panel);
-      border: 1.5px solid rgba(255, 255, 255, 0.8);
-      z-index: 40;
     }
-    body.dark-mode .top-bar { border-color: rgba(255, 255, 255, 0.08); }
 
-    .brand-section {
+    .search-pill {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-pill);
+      padding: 8px 18px;
+      box-shadow: var(--shadow-sm);
+      width: 420px;
+      font-size: 13px;
+      color: var(--text-muted);
     }
-
-    .brand-badge {
-      width: 42px; height: 42px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      box-shadow: 3px 5px 12px rgba(59, 130, 246, 0.35), inset 2px 2px 3px rgba(255, 255, 255, 0.8);
-    }
-
-    .brand-title {
-      font-size: 16px;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .brand-title span { color: var(--primary); }
-
-    .brand-sub {
-      font-size: 11px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    .status-ping {
+    .search-pill .dot {
       width: 8px; height: 8px;
-      border-radius: 50%;
+      border-radius: var(--radius-pill);
       background: var(--emerald);
-      box-shadow: 0 0 0 3px var(--emerald-light);
-      display: inline-block;
-      animation: ping-pulse 2s infinite ease-in-out;
-    }
-    .status-ping.waiting {
-      background: var(--amber);
-      box-shadow: 0 0 0 3px var(--amber-light);
-    }
-    .status-ping.error {
-      background: var(--rose);
-      box-shadow: 0 0 0 3px var(--rose-light);
-    }
-    @keyframes ping-pulse {
-      0%, 100% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.3); opacity: 0.7; }
     }
 
-    /* Navigation Switcher Pill */
-    .nav-switcher {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: var(--clay-inset);
-      padding: 5px 7px;
-      border-radius: var(--radius-pill);
-      box-shadow: var(--clay-shadow-inset);
-    }
-
-    .nav-pill-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
-      border-radius: var(--radius-pill);
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .nav-pill-btn:hover { color: var(--primary); }
-    .nav-pill-btn.active {
-      background: var(--clay-surface);
-      color: var(--primary);
-      box-shadow: 3px 5px 12px rgba(79, 70, 229, 0.2), inset 1px 1px 2px #fff;
-      font-weight: 700;
-    }
-
-    .header-actions {
+    .top-actions {
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .metric-chip {
+    .stat-chip {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 8px 14px;
+      gap: 6px;
+      padding: 7px 14px;
       border-radius: var(--radius-pill);
-      background: var(--clay-inset);
-      box-shadow: var(--clay-shadow-inset);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      box-shadow: var(--shadow-sm);
+      font-size: 12px;
       font-weight: 600;
-      color: var(--text-secondary);
     }
-    .metric-chip .val { color: var(--primary); font-weight: 700; }
-
-    .icon-hud-btn {
-      width: 40px; height: 40px;
-      border-radius: 50%;
-      border: none;
-      background: var(--clay-surface);
+    .stat-chip span.label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .stat-chip span.val {
+      font-family: 'JetBrains Mono', monospace;
       color: var(--text-main);
-      box-shadow: var(--clay-shadow-btn);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 16px;
-      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      font-weight: 700;
     }
-    .icon-hud-btn:hover { transform: translateY(-2px) scale(1.05); }
 
-    /* === MAIN LAYOUT CONTAINER === */
-    .dashboard-container {
+    /* === CONTENT GRID === */
+    .main-grid {
       display: grid;
-      grid-template-columns: 1fr 380px;
+      grid-template-columns: 1fr 340px;
       gap: 20px;
-      padding: 20px;
-      flex: 1;
+      align-items: start;
     }
 
-    @media (max-width: 1080px) {
-      .dashboard-container {
+    @media (max-width: 1180px) {
+      .main-grid {
         grid-template-columns: 1fr;
       }
     }
 
-    /* === VIDEO VIEWPORT HERO PANEL === */
-    .viewport-panel {
-      background: var(--clay-surface);
-      border-radius: var(--radius-panel);
-      box-shadow: var(--clay-shadow-panel);
-      border: 1.5px solid rgba(255, 255, 255, 0.8);
+    .left-flow {
       display: flex;
       flex-direction: column;
-      overflow: hidden;
-      position: relative;
+      gap: 20px;
     }
-    body.dark-mode .viewport-panel { border-color: rgba(255, 255, 255, 0.08); }
 
-    .viewport-header {
-      padding: 14px 20px;
+    /* === HERO BANNER CARD === */
+    .hero-banner {
+      background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #eff6ff 100%);
+      border: 1px solid #e9d5ff;
+      border-radius: var(--radius-card);
+      padding: 24px 28px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid var(--clay-inset);
+      box-shadow: var(--shadow-card);
+      position: relative;
+      overflow: hidden;
     }
 
-    .feed-mode-tabs {
+    .hero-text {
       display: flex;
+      flex-direction: column;
       gap: 6px;
-      background: var(--clay-inset);
-      padding: 4px 6px;
+      max-width: 480px;
+    }
+    .hero-text h1 {
+      font-size: 20px;
+      font-weight: 800;
+      color: #3b0764;
+      line-height: 1.2;
+    }
+    .hero-text p {
+      font-size: 13px;
+      color: #6b21a8;
+      font-weight: 500;
+    }
+    .hero-btn {
+      align-self: flex-start;
+      margin-top: 10px;
+      padding: 8px 18px;
       border-radius: var(--radius-pill);
-      box-shadow: var(--clay-shadow-inset);
+      background: #7c3aed;
+      color: #ffffff;
+      font-size: 12px;
+      font-weight: 700;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 4px 14px rgba(124, 58, 237, 0.3);
+      transition: all 0.2s;
+    }
+    .hero-btn:hover {
+      background: #6d28d9;
+      transform: translateY(-1px);
     }
 
+    .hero-badge-art {
+      width: 80px; height: 80px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 38px;
+      box-shadow: 0 8px 20px rgba(124, 58, 237, 0.15);
+    }
+
+    /* === 3 PASTEL METRIC STAT CARDS === */
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .metric-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      padding: 18px 20px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .metric-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .metric-icon-box {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+    .metric-icon-box.green { background: var(--emerald-light); color: var(--emerald-text); }
+    .metric-icon-box.amber { background: var(--amber-light); color: var(--amber-text); }
+    .metric-icon-box.purple { background: var(--primary-light); color: var(--primary); }
+
+    .metric-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+    .metric-val {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1.1;
+    }
+    .metric-sub {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* SVG Progress Ring */
+    .ring-container {
+      position: relative;
+      width: 68px; height: 68px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .ring-svg {
+      transform: rotate(-90deg);
+      width: 68px; height: 68px;
+    }
+    .ring-bg {
+      stroke: #f1f5f9;
+      stroke-width: 6;
+      fill: none;
+    }
+    .ring-progress {
+      stroke: url(#ringGrad);
+      stroke-width: 6;
+      stroke-linecap: round;
+      fill: none;
+      stroke-dasharray: 188;
+      stroke-dashoffset: 40;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+    .ring-text {
+      position: absolute;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* === CAMERA FEED HERO CARD (COMPACT SQUARE) === */
+    .video-hero-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-card);
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .video-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .video-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .feed-tabs {
+      display: flex;
+      gap: 4px;
+      background: var(--bg-card-subtle);
+      padding: 3px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-subtle);
+    }
     .feed-tab {
-      padding: 6px 12px;
+      padding: 5px 12px;
       border-radius: var(--radius-pill);
       border: none;
       background: transparent;
@@ -291,337 +469,269 @@
       font-size: 11px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.2s;
     }
     .feed-tab.active {
-      background: var(--clay-surface);
+      background: var(--bg-card);
       color: var(--primary);
-      box-shadow: 2px 3px 8px rgba(0, 0, 0, 0.1);
-      font-weight: 700;
+      box-shadow: var(--shadow-sm);
     }
 
-    /* Video Frame Canvas Screen */
-    .video-screen {
+    .video-box-square {
       position: relative;
-      flex: 1;
-      min-height: 480px;
-      background: #05070e;
+      width: 100%;
+      height: 335px;
+      background: #090d16;
+      border-radius: var(--radius-sm);
+      overflow: hidden;
       display: flex;
       align-items: center;
       justify-content: center;
-      overflow: hidden;
+      box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.5);
     }
 
     .video-element {
       width: 100%;
       height: 100%;
       object-fit: contain;
-      image-rendering: auto;
     }
 
-    /* Tactical On-Screen Decision HUD */
-    .screen-hud-overlay {
+    .screen-overlay-top {
       position: absolute;
-      top: 16px;
-      left: 16px;
-      right: 16px;
+      top: 10px; left: 10px; right: 10px;
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: flex-start;
       pointer-events: none;
       z-index: 10;
     }
-
-    .decision-badge {
+    .status-badge-pill {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
-      padding: 8px 16px;
-      border-radius: var(--radius-pill);
-      font-size: 13px;
-      font-weight: 800;
-      letter-spacing: 0.8px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
-      transition: all 0.3s ease;
-    }
-    .decision-badge.go {
-      background: rgba(16, 185, 129, 0.88);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-    }
-    .decision-badge.stop {
-      background: rgba(244, 63, 94, 0.92);
-      color: #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      animation: pulse-danger 1s infinite alternate;
-    }
-    @keyframes pulse-danger {
-      from { transform: scale(1); }
-      to { transform: scale(1.04); box-shadow: 0 0 20px rgba(244, 63, 94, 0.8); }
-    }
-
-    .stats-overlay-cluster {
-      display: flex;
-      flex-direction: column;
       gap: 6px;
-      align-items: flex-end;
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
+      font-weight: 700;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    }
+    .status-badge-pill.go {
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--emerald-text);
+      border: 1px solid var(--emerald-border);
+    }
+    .status-badge-pill.stop {
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--rose-text);
+      border: 1px solid var(--rose-border);
+      animation: pulse-stop 1s infinite alternate;
+    }
+    @keyframes pulse-stop {
+      from { transform: scale(1); }
+      to { transform: scale(1.03); }
     }
 
-    .hud-tag {
+    .hud-chip {
       background: rgba(15, 23, 42, 0.75);
       backdrop-filter: blur(8px);
-      padding: 5px 10px;
-      border-radius: 8px;
-      color: #e2e8f0;
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      color: #ffffff;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 11px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 10px;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.15);
     }
 
-    /* Screen Bottom Quick Controls */
-    .screen-controls {
+    .video-quick-controls {
       position: absolute;
-      bottom: 16px;
-      left: 50%;
+      bottom: 10px; left: 50%;
       transform: translateX(-50%);
       display: flex;
       align-items: center;
-      gap: 12px;
-      background: rgba(15, 23, 42, 0.82);
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(12px);
-      padding: 8px 16px;
+      padding: 4px 6px;
       border-radius: var(--radius-pill);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      box-shadow: var(--shadow-float);
+      border: 1px solid var(--border-subtle);
       z-index: 10;
     }
-
-    .ctrl-pill-btn {
+    .quick-pill-btn {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 7px 14px;
+      gap: 5px;
+      padding: 5px 11px;
       border-radius: var(--radius-pill);
-      border: none;
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
+      border: 1px solid var(--border-subtle);
+      background: #ffffff;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.2s ease;
-      color: #ffffff;
-      background: rgba(255, 255, 255, 0.15);
+      transition: all 0.2s;
     }
-    .ctrl-pill-btn:hover {
-      background: rgba(255, 255, 255, 0.28);
-      transform: translateY(-1px);
+    .quick-pill-btn:hover {
+      background: var(--bg-card-subtle);
+      color: var(--primary);
+      border-color: var(--primary);
     }
-    .ctrl-pill-btn.flash.active {
-      background: #f59e0b;
-      color: #000000;
-      box-shadow: 0 0 14px rgba(245, 158, 11, 0.6);
+    .quick-pill-btn.flash.active {
+      background: var(--amber-light);
+      border-color: var(--amber-border);
+      color: var(--amber-text);
     }
-    .ctrl-pill-btn.status.active {
-      background: #f43f5e;
-      color: #ffffff;
-      box-shadow: 0 0 14px rgba(244, 63, 94, 0.6);
+    .quick-pill-btn.status.active {
+      background: var(--primary-light);
+      border-color: var(--primary-border);
+      color: var(--primary);
     }
 
-    /* === SIDE DECK (TELEMETRY & CONTROLS) === */
-    .side-deck {
+    /* === RIGHT SIDEBAR DECK CARDS === */
+    .right-deck {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 20px;
     }
 
-    .deck-card {
-      background: var(--clay-surface);
+    .deck-widget-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
       border-radius: var(--radius-card);
-      box-shadow: var(--clay-shadow-panel);
-      border: 1.5px solid rgba(255, 255, 255, 0.8);
-      padding: 16px;
+      box-shadow: var(--shadow-card);
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 14px;
     }
-    body.dark-mode .deck-card { border-color: rgba(255, 255, 255, 0.08); }
 
-    .card-title {
+    .widget-title {
       font-size: 13px;
       font-weight: 700;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
+      color: var(--text-main);
       display: flex;
       align-items: center;
       justify-content: space-between;
+      border-bottom: 1px solid var(--bg-card-subtle);
+      padding-bottom: 8px;
     }
-
-    .card-title .badge {
+    .tag-badge {
       font-size: 10px;
-      padding: 2px 8px;
-      border-radius: var(--radius-pill);
-      background: var(--primary-glow);
-      color: var(--primary);
       font-weight: 700;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      background: var(--primary-light);
+      color: var(--primary);
+      border: 1px solid var(--primary-border);
     }
 
-    /* Metrics Grid */
-    .data-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .data-box {
-      background: var(--clay-inset);
-      border-radius: 12px;
-      padding: 10px 12px;
-      box-shadow: var(--clay-shadow-inset);
+    .control-field {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 5px;
     }
-
-    .data-label {
-      font-size: 10px;
-      font-weight: 600;
-      color: var(--text-muted);
-      text-transform: uppercase;
-    }
-
-    .data-value {
-      font-size: 16px;
-      font-weight: 800;
-      font-family: 'JetBrains Mono', monospace;
-      color: var(--text-main);
-    }
-    .data-value.good { color: var(--emerald); }
-    .data-value.warn { color: var(--amber); }
-    .data-value.danger { color: var(--rose); }
-
-    /* Danger Gauge Bar */
-    .gauge-track {
-      width: 100%;
-      height: 8px;
-      background: var(--clay-inset);
-      border-radius: 4px;
-      overflow: hidden;
-      box-shadow: var(--clay-shadow-inset);
-      margin-top: 4px;
-    }
-    .gauge-fill {
-      height: 100%;
-      width: 0%;
-      background: var(--emerald);
-      border-radius: 4px;
-      transition: width 0.3s ease, background 0.3s ease;
-    }
-    .gauge-fill.warn { background: var(--amber); }
-    .gauge-fill.danger { background: var(--rose); }
-
-    /* Sliders and Range Controls */
-    .control-row {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .slider-header {
-      display: flex;
-      justify-content: space-between;
+    .field-label {
       font-size: 11px;
       font-weight: 600;
       color: var(--text-secondary);
+      display: flex;
+      justify-content: space-between;
     }
-    .slider-header span.val {
+    .field-label span.val {
       font-family: 'JetBrains Mono', monospace;
       color: var(--primary);
     }
 
     input[type="range"] {
       -webkit-appearance: none;
-      width: 100%;
-      height: 6px;
-      background: var(--clay-inset);
-      border-radius: 3px;
-      box-shadow: var(--clay-shadow-inset);
+      width: 100%; height: 5px;
+      background: #e2e8f0;
+      border-radius: var(--radius-pill);
       outline: none;
     }
     input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 16px; height: 16px;
-      border-radius: 50%;
+      width: 15px; height: 15px;
+      border-radius: var(--radius-pill);
       background: var(--primary);
+      border: 2px solid #ffffff;
       cursor: pointer;
-      box-shadow: 0 2px 6px rgba(79, 70, 229, 0.4);
+      box-shadow: 0 1px 4px rgba(124, 58, 237, 0.4);
     }
 
-    /* Buttons */
-    .deck-btn-group {
+    .btn-row {
       display: flex;
       gap: 8px;
+      margin-top: 4px;
     }
-
-    .clay-btn {
+    .skillio-btn {
       flex: 1;
-      padding: 10px;
-      border-radius: var(--radius-card);
-      border: none;
-      background: var(--clay-surface);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-card);
+      background: #ffffff;
       color: var(--text-main);
-      box-shadow: var(--clay-shadow-btn);
-      font-family: 'Outfit', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 11px;
+      font-weight: 600;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
-      transition: all 0.2s ease;
+      transition: all 0.2s;
     }
-    .clay-btn:hover { transform: translateY(-1px); color: var(--primary); }
-    .clay-btn:active { transform: translateY(1px); }
-    .clay-btn.primary {
-      background: linear-gradient(135deg, #4f46e5 0%, #3730a3 100%);
+    .skillio-btn:hover {
+      background: var(--bg-card-subtle);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+    .skillio-btn.primary {
+      background: var(--primary);
+      border-color: var(--primary);
       color: #ffffff;
-      box-shadow: 3px 5px 14px rgba(79, 70, 229, 0.35);
+      box-shadow: 0 2px 8px rgba(124, 58, 237, 0.3);
+    }
+    .skillio-btn.primary:hover {
+      background: #6d28d9;
     }
 
-    /* Snapshots Gallery */
-    .gallery-strip {
+    /* Snapshots gallery strip */
+    .snap-strip {
       display: flex;
       gap: 8px;
       overflow-x: auto;
       padding-bottom: 4px;
     }
-    .gallery-item {
-      width: 80px; height: 60px;
+    .snap-item {
+      width: 72px; height: 54px;
       border-radius: 8px;
       overflow: hidden;
       flex-shrink: 0;
-      border: 1.5px solid var(--clay-inset);
+      border: 1px solid var(--border-subtle);
       cursor: pointer;
-      position: relative;
+      transition: transform 0.2s;
     }
-    .gallery-item img {
+    .snap-item:hover {
+      transform: scale(1.05);
+    }
+    .snap-item img {
       width: 100%; height: 100%; object-fit: cover;
     }
 
     /* Toast */
     .toast {
       position: fixed;
-      bottom: 24px;
-      left: 50%;
+      bottom: 24px; left: 50%;
       transform: translateX(-50%) translateY(80px);
-      background: rgba(15, 23, 42, 0.9);
+      background: var(--text-main);
       color: #ffffff;
-      padding: 10px 20px;
+      padding: 9px 18px;
       border-radius: var(--radius-pill);
-      font-size: 13px;
+      font-size: 12px;
       font-weight: 600;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      box-shadow: var(--shadow-float);
       opacity: 0;
       pointer-events: none;
       transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -635,197 +745,270 @@
 </head>
 <body>
 
-  <!-- MISSION CONTROL TOP BAR -->
-  <header class="top-bar">
-    <div class="brand-section">
-      <div class="brand-badge">📹</div>
-      <div class="brand-info">
-        <div class="brand-title">
-          ESP32-CAM <span>· VISION AI</span>
-        </div>
-        <div class="brand-sub">
-          <span class="status-ping" id="statusDot"></span>
-          <span id="statusText">Connecting Stream…</span>
-          <span style="opacity: 0.4;">|</span>
-          <span id="pingVal">--ms</span>
+  <!-- LEFT NAVIGATION SIDEBAR -->
+  <aside class="sidebar">
+    <div>
+      <div class="brand-header">
+        <div class="brand-logo">🤖</div>
+        <div class="brand-name">
+          CaveAI
+          <span>Mission Ops</span>
         </div>
       </div>
+
+      <div class="nav-section-title">Navigation</div>
+      <nav class="nav-links">
+        <a href="cave-ai.html" class="nav-item">
+          <span class="icon">🗺️</span>
+          SLAM Mapping
+        </a>
+        <a href="cam-dashboard.html" class="nav-item active">
+          <span class="icon">📹</span>
+          Vision Dashboard
+        </a>
+      </nav>
+
+      <div class="nav-section-title">Telemetry</div>
+      <nav class="nav-links">
+        <div class="nav-item">
+          <span class="icon">🌡️</span>
+          Atmosphere: <strong id="sidebarTemp">--.-°C</strong>
+        </div>
+        <div class="nav-item">
+          <span class="icon">💧</span>
+          Humidity: <strong id="sidebarHum">--.-%</strong>
+        </div>
+      </nav>
     </div>
 
-    <!-- DASHBOARD TOGGLE NAVIGATION -->
-    <nav class="nav-switcher">
-      <a href="cave-ai.html" class="nav-pill-btn" title="Switch to Tactical SLAM & Mission Control HUD">
-        <span>🗺️</span> SLAM HUD
-      </a>
-      <a href="cam-dashboard.html" class="nav-pill-btn active" title="Active: ESP32-CAM AI Vision Dashboard">
-        <span>📹</span> Camera Vision
-      </a>
-    </nav>
-
-    <!-- RIGHT HEADER METRICS & CONTROLS -->
-    <div class="header-actions">
-      <div class="metric-chip">
-        <span>FPS</span>
-        <span class="val" id="headerFps">0.0</span>
+    <!-- SIDEBAR FOOTER -->
+    <div class="sidebar-footer">
+      <div class="robot-avatar">⚡</div>
+      <div class="robot-meta">
+        <strong>Unitree CAVE-01</strong>
+        <span id="sidebarStatus">UDP Stream Live</span>
       </div>
-      <div class="metric-chip">
-        <span>UDP</span>
-        <span class="val" style="color:var(--emerald);">:4210</span>
-      </div>
-      <button class="icon-hud-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode">🌙</button>
     </div>
-  </header>
+  </aside>
 
-  <!-- MAIN DASHBOARD CONTENT -->
-  <main class="dashboard-container">
+  <!-- MAIN APP WRAPPER -->
+  <main class="app-main">
 
-    <!-- HERO VIDEO VIEWPORT -->
-    <section class="viewport-panel">
-      <div class="viewport-header">
-        <div class="feed-mode-tabs">
-          <button class="feed-tab active" data-feed="annotated">🎯 AI Corridor</button>
-          <button class="feed-tab" data-feed="raw">📷 Raw Feed</button>
-          <button class="feed-tab" data-feed="mask">⬛ Obstacle Mask</button>
-        </div>
-        <span class="badge" id="corridorResolution">QVGA 320×240</span>
+    <!-- TOP BAR (SEARCH & HEADER STATS) -->
+    <header class="header-bar">
+      <div class="search-pill">
+        <div class="dot" id="statusDot"></div>
+        <span id="statusText">ESP32-CAM Source: 10.151.173.130:4210</span>
       </div>
 
-      <div class="video-screen">
-        <img id="videoStream" class="video-element" src="http://127.0.0.1:5000/video_feed" alt="ESP32-CAM Live Feed" crossorigin="anonymous">
-
-        <!-- ON-SCREEN DECISION HUD OVERLAY -->
-        <div class="screen-hud-overlay">
-          <div class="decision-badge go" id="decisionBadge">
-            <span>🟢</span> <span id="decisionText">CLEAR (GO)</span>
-          </div>
-          <div class="stats-overlay-cluster">
-            <div class="hud-tag" id="hudReason">Corridor Clear</div>
-            <div class="hud-tag" id="hudObsCoverage">Hazard Area: 0.0%</div>
-          </div>
+      <div class="top-actions">
+        <div class="stat-chip">
+          <span class="label">FPS</span>
+          <span class="val" id="headerFps">0.0</span>
         </div>
-
-        <!-- ON-SCREEN QUICK CONTROLS -->
-        <div class="screen-controls">
-          <button class="ctrl-pill-btn flash" id="btnFlashToggle" title="Toggle ESP32-CAM Flashlight">
-            <span>⚡</span> Flashlight
-          </button>
-          <button class="ctrl-pill-btn status" id="btnStatusToggle" title="Toggle ESP32 Status LED">
-            <span>🚨</span> Status LED
-          </button>
-          <button class="ctrl-pill-btn" id="btnSnapshot" title="Capture high-resolution snapshot">
-            <span>📸</span> Snapshot
-          </button>
+        <div class="stat-chip">
+          <span class="label">PING</span>
+          <span class="val" id="pingVal">--ms</span>
+        </div>
+        <div class="stat-chip">
+          <span class="label">TEMP</span>
+          <span class="val" id="camHeaderTemp" style="color:#e11d48;">--.-°C</span>
+        </div>
+        <div class="stat-chip">
+          <span class="label">HUM</span>
+          <span class="val" id="camHeaderHum" style="color:#0284c7;">--.-%</span>
         </div>
       </div>
-    </section>
+    </header>
 
-    <!-- RIGHT CONTROL & TELEMETRY DECK -->
-    <aside class="side-deck">
+    <!-- CONTENT GRID -->
+    <div class="main-grid">
 
-      <!-- Corridor Safety & Hazard Analysis -->
-      <div class="deck-card">
-        <div class="card-title">
-          <span>Corridor Clearance</span>
-          <span class="badge" id="corridorBadge">OPTIMAL</span>
-        </div>
-        <div class="data-grid">
-          <div class="data-box">
-            <span class="data-label">Decision</span>
-            <span class="data-value good" id="deckDecision">GO</span>
+      <!-- LEFT FLOW (HERO + METRICS + COMPACT SQUARE VIDEO) -->
+      <div class="left-flow">
+
+        <!-- HERO BANNER -->
+        <section class="hero-banner">
+          <div class="hero-text">
+            <h1>Autonomous Vision Pipeline</h1>
+            <p>Real-time obstacle segmentation & yellow floor corridor boundary masking for rover collision prevention.</p>
+            <a href="cave-ai.html" class="hero-btn">Switch to SLAM HUD ↗</a>
           </div>
-          <div class="data-box">
-            <span class="data-label">Obstacle %</span>
-            <span class="data-value" id="deckObsRatio">0.0%</span>
+          <div class="hero-badge-art">🎯</div>
+        </section>
+
+        <!-- 3 PASTEL STAT CARDS -->
+        <section class="metric-row">
+          <!-- Card 1: Safety Decision -->
+          <div class="metric-card">
+            <div class="metric-info">
+              <div class="metric-icon-box green">✓</div>
+              <span class="metric-label">Corridor Safety</span>
+              <span class="metric-val" id="deckDecision" style="color:var(--emerald-text);">GO</span>
+              <span class="metric-sub" id="corridorBadge">Path Optimal</span>
+            </div>
           </div>
-          <div class="data-box">
-            <span class="data-label">Contours</span>
-            <span class="data-value" id="deckBoxesCount">0</span>
+
+          <!-- Card 2: Obstacle Density -->
+          <div class="metric-card">
+            <div class="metric-info">
+              <div class="metric-icon-box amber">⚠</div>
+              <span class="metric-label">Hazard Area</span>
+              <span class="metric-val" id="deckObsRatio">0.0%</span>
+              <span class="metric-sub">Stop threshold: 3.0%</span>
+            </div>
           </div>
-          <div class="data-box">
-            <span class="data-label">Frame ID</span>
-            <span class="data-value" id="deckFrameId">#0</span>
+
+          <!-- Card 3: Donut Progress Ring -->
+          <div class="metric-card">
+            <div class="metric-info">
+              <div class="metric-icon-box purple">📊</div>
+              <span class="metric-label">Hazard Density</span>
+              <span class="metric-sub" id="hazardGaugeVal">0.0% / 3.0%</span>
+            </div>
+            <div class="ring-container">
+              <svg class="ring-svg">
+                <defs>
+                  <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#8b5cf6" />
+                    <stop offset="100%" stop-color="#ec4899" />
+                  </linearGradient>
+                </defs>
+                <circle class="ring-bg" cx="34" cy="34" r="30" />
+                <circle class="ring-progress" id="hazardRingCircle" cx="34" cy="34" r="30" />
+              </svg>
+              <span class="ring-text" id="hazardRingText">0%</span>
+            </div>
           </div>
-        </div>
-        <div class="control-row">
-          <div class="slider-header">
-            <span>Hazard Density vs Stop Threshold (3%)</span>
-            <span class="val" id="hazardGaugeVal">0%</span>
+        </section>
+
+        <!-- VIDEO HERO CARD (COMPACT SQUARE) -->
+        <section class="video-hero-card">
+          <div class="video-card-header">
+            <div class="video-card-title">
+              <span>📹</span> Live Vision Stream
+              <span style="font-size:11px; font-weight:600; color:var(--text-muted);">(QVGA 320×240)</span>
+            </div>
+            <div class="feed-tabs">
+              <button class="feed-tab active" data-feed="annotated">🎯 AI Corridor</button>
+              <button class="feed-tab" data-feed="raw">📷 Raw Feed</button>
+              <button class="feed-tab" data-feed="mask">⬛ Obstacle Mask</button>
+            </div>
           </div>
-          <div class="gauge-track">
-            <div class="gauge-fill" id="hazardGaugeFill" style="width: 0%;"></div>
+
+          <!-- COMPACT SQUARE VIDEO VIEWPORT -->
+          <div class="video-box-square">
+            <img id="videoStream" class="video-element" src="http://127.0.0.1:5000/video_feed" alt="ESP32-CAM Feed" crossorigin="anonymous">
+
+            <!-- OVERLAY ON TOP -->
+            <div class="screen-overlay-top">
+              <div class="status-badge-pill go" id="decisionBadge">
+                <span>🟢</span> <span id="decisionText">CLEAR (GO)</span>
+              </div>
+              <div class="hud-chip" id="hudReason">Corridor Clear</div>
+            </div>
+
+            <!-- FLOATING QUICK CONTROLS -->
+            <div class="video-quick-controls">
+              <button class="quick-pill-btn flash" id="btnFlashToggle" title="Toggle ESP32 Flashlight">
+                <span>⚡</span> Flashlight
+              </button>
+              <button class="quick-pill-btn status" id="btnStatusToggle" title="Toggle Status LED">
+                <span>🚨</span> Status LED
+              </button>
+              <button class="quick-pill-btn" id="btnSnapshot" title="Capture Snapshot">
+                <span>📸</span> Snapshot
+              </button>
+            </div>
           </div>
-        </div>
+        </section>
+
       </div>
 
-      <!-- Hardware Deck & Target IP -->
-      <div class="deck-card">
-        <div class="card-title">
-          <span>ESP32-CAM Hardware</span>
-          <span class="badge">UDP :4211</span>
-        </div>
-        <div class="control-row">
-          <div class="slider-header">
-            <span>Target ESP32 IP</span>
-            <span class="val" id="espIpDisplay">10.160.191.130</span>
+      <!-- RIGHT DECK (HARDWARE + CV TUNER + SNAPSHOTS) -->
+      <aside class="right-deck">
+
+        <!-- Hardware & IP Config Widget -->
+        <div class="deck-widget-card">
+          <div class="widget-title">
+            <span>Hardware Config</span>
+            <span class="tag-badge">WI-FI LIVE</span>
+          </div>
+
+          <div class="control-field">
+            <label class="field-label">Camera Ingestion</label>
+            <select id="selCameraSource" style="background:#ffffff; color:var(--text-main); border:1px solid var(--border-card); border-radius:8px; padding:6px 10px; font-size:11px; outline:none; width:100%;">
+              <option value="auto">Auto (ESP32 Stream / Active)</option>
+              <option value="http">ESP32 HTTP (:81/stream)</option>
+              <option value="udp">ESP32 UDP (:4210)</option>
+              <option value="local">Direct USB Camera</option>
+            </select>
+          </div>
+
+          <div class="control-field">
+            <label class="field-label">Target ESP32-CAM IP</label>
+            <div style="display:flex; gap:6px;">
+              <input type="text" id="inputEspIp" value="10.151.173.130" style="flex:1; border:1px solid var(--border-card); border-radius:8px; padding:6px 10px; font-family:'JetBrains Mono', monospace; font-size:11px; outline:none;">
+              <button class="skillio-btn primary" id="btnUpdateIp" style="padding:6px 12px; flex:initial;">Set</button>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button class="skillio-btn" id="btnLedOn">💡 Flash ON</button>
+            <button class="skillio-btn" id="btnLedOff">🌑 OFF</button>
+            <button class="skillio-btn primary" id="btnLedToggle">⚡ Toggle</button>
           </div>
         </div>
-        <div class="deck-btn-group">
-          <button class="clay-btn" id="btnLedOn">💡 Flash ON</button>
-          <button class="clay-btn" id="btnLedOff">🌑 Flash OFF</button>
-          <button class="clay-btn primary" id="btnLedToggle">⚡ Toggle</button>
-        </div>
-      </div>
 
-      <!-- Interactive CV Calibration Studio -->
-      <div class="deck-card">
-        <div class="card-title">
-          <span>Corridor & HSV Tuner</span>
-          <span class="badge">REAL-TIME</span>
+        <!-- CV Calibration Studio Widget -->
+        <div class="deck-widget-card">
+          <div class="widget-title">
+            <span>CV Calibration</span>
+            <span class="tag-badge">TUNER</span>
+          </div>
+
+          <div class="control-field">
+            <div class="field-label"><span>Lower Hue</span><span class="val" id="valLowerH">18</span></div>
+            <input type="range" id="rngLowerH" min="0" max="179" value="18">
+          </div>
+          <div class="control-field">
+            <div class="field-label"><span>Upper Hue</span><span class="val" id="valUpperH">45</span></div>
+            <input type="range" id="rngUpperH" min="0" max="179" value="45">
+          </div>
+          <div class="control-field">
+            <div class="field-label"><span>Corridor Top ROI %</span><span class="val" id="valRoiTop">40%</span></div>
+            <input type="range" id="rngRoiTop" min="10" max="80" value="40">
+          </div>
+          <div class="control-field">
+            <div class="field-label"><span>Stop Threshold %</span><span class="val" id="valStopThresh">3.0%</span></div>
+            <input type="range" id="rngStopThresh" min="0.5" max="15.0" step="0.5" value="3.0">
+          </div>
+
+          <div class="btn-row">
+            <button class="skillio-btn" id="btnResetConfig">↺ Reset</button>
+            <button class="skillio-btn primary" id="btnApplyConfig">✓ Apply</button>
+          </div>
         </div>
 
-        <div class="control-row">
-          <div class="slider-header"><span>Lower Hue (Floor)</span><span class="val" id="valLowerH">18</span></div>
-          <input type="range" id="rngLowerH" min="0" max="179" value="18">
-        </div>
-        <div class="control-row">
-          <div class="slider-header"><span>Upper Hue (Floor)</span><span class="val" id="valUpperH">45</span></div>
-          <input type="range" id="rngUpperH" min="0" max="179" value="45">
-        </div>
-        <div class="control-row">
-          <div class="slider-header"><span>Corridor Top ROI %</span><span class="val" id="valRoiTop">40%</span></div>
-          <input type="range" id="rngRoiTop" min="10" max="80" value="40">
-        </div>
-        <div class="control-row">
-          <div class="slider-header"><span>Stop Threshold %</span><span class="val" id="valStopThresh">3.0%</span></div>
-          <input type="range" id="rngStopThresh" min="0.5" max="15.0" step="0.5" value="3.0">
+        <!-- Inspection Snapshots Widget -->
+        <div class="deck-widget-card">
+          <div class="widget-title">
+            <span>Inspection Snapshots</span>
+            <span class="tag-badge" id="snapCount">0</span>
+          </div>
+          <div class="snap-strip" id="snapshotGallery">
+            <div style="font-size:11px; color:var(--text-muted); padding:8px;">No snapshots captured yet</div>
+          </div>
         </div>
 
-        <div class="deck-btn-group" style="margin-top: 6px;">
-          <button class="clay-btn" id="btnResetConfig">↺ Defaults</button>
-          <button class="clay-btn primary" id="btnApplyConfig">✓ Apply Live</button>
-        </div>
-      </div>
+      </aside>
+    </div>
 
-      <!-- Snapshot Gallery -->
-      <div class="deck-card">
-        <div class="card-title">
-          <span>Inspection Snapshots</span>
-          <span class="badge" id="snapCount">0</span>
-        </div>
-        <div class="gallery-strip" id="snapshotGallery">
-          <div style="font-size:11px; color:var(--text-muted); padding:8px;">No snapshots captured yet</div>
-        </div>
-      </div>
-
-    </aside>
   </main>
 
   <div class="toast" id="toast"></div>
 
   <script>
-    // ============================================================
-    // CONFIGURATION & STATE
-    // ============================================================
     const SERVER_URL = "http://127.0.0.1:5000";
     let currentFeed = "annotated";
     const snapshots = [];
@@ -833,39 +1016,14 @@
     const $ = id => document.getElementById(id);
     const videoImg = $('videoStream');
 
-    function showToast(msg, type = 'info') {
+    function showToast(msg) {
       const t = $('toast');
       t.textContent = msg;
       t.className = 'toast show';
       setTimeout(() => { t.className = 'toast'; }, 2500);
     }
 
-    // ============================================================
-    // THEME HANDLING
-    // ============================================================
-    function applyTheme(isDark) {
-      if (isDark) {
-        document.body.classList.add('dark-mode');
-        $('themeToggleBtn').textContent = '☀️';
-      } else {
-        document.body.classList.remove('dark-mode');
-        $('themeToggleBtn').textContent = '🌙';
-      }
-      localStorage.setItem('cave_theme', isDark ? 'dark' : 'light');
-    }
-
-    const savedTheme = localStorage.getItem('cave_theme') === 'dark';
-    applyTheme(savedTheme);
-
-    $('themeToggleBtn').addEventListener('click', () => {
-      const isDark = !document.body.classList.contains('dark-mode');
-      applyTheme(isDark);
-      showToast(isDark ? '🌙 Tactical Dark Mode Engaged' : '☀️ Light Theme Engaged');
-    });
-
-    // ============================================================
-    // FEED MODE TABS
-    // ============================================================
+    // Feed Tabs
     document.querySelectorAll('.feed-tab').forEach(tab => {
       tab.addEventListener('click', () => {
         document.querySelectorAll('.feed-tab').forEach(t => t.classList.remove('active'));
@@ -883,37 +1041,40 @@
       });
     });
 
-    // ============================================================
-    // TELEMETRY POLLING LOOP
-    // ============================================================
+    // Telemetry Polling Loop
+    function updateVal(id, text) {
+      const el = $(id);
+      if (!el) return;
+      if (el.textContent !== text) {
+        el.textContent = text;
+      }
+    }
+
     async function fetchStats() {
       const t0 = performance.now();
       try {
         const resp = await fetch(`${SERVER_URL}/api/stats`);
         const latency = Math.round(performance.now() - t0);
-        $('pingVal').textContent = `${latency}ms`;
+        if ($('pingVal')) $('pingVal').textContent = `${latency}ms`;
 
         if (!resp.ok) throw new Error('HTTP ' + resp.status);
         const data = await resp.json();
 
-        // Update Connection Status
+        // Connection status
         const statusDot = $('statusDot');
         if (data.is_live) {
-          statusDot.className = 'status-ping';
-          $('statusText').textContent = 'UDP Stream Live';
+          statusDot.style.background = 'var(--emerald)';
+          $('statusText').textContent = 'ESP32 UDP Stream Live (:4210)';
+          if ($('sidebarStatus')) $('sidebarStatus').textContent = 'Live · Port 4210';
         } else {
-          statusDot.className = 'status-ping waiting';
+          statusDot.style.background = 'var(--amber)';
           $('statusText').textContent = 'Awaiting ESP32 (Port 4210)';
+          if ($('sidebarStatus')) $('sidebarStatus').textContent = 'Waiting for ESP32';
         }
 
-        // Metrics
-        $('headerFps').textContent = data.fps.toFixed(1);
-        $('deckFrameId').textContent = '#' + (data.frame_id >= 0 ? data.frame_id : 0);
-        $('deckObsRatio').textContent = data.obstacle_ratio.toFixed(1) + '%';
-        $('deckBoxesCount').textContent = data.boxes_count;
-        $('hudReason').textContent = data.reason;
-        $('hudObsCoverage').textContent = `Hazard Area: ${data.obstacle_ratio.toFixed(1)}%`;
-        $('espIpDisplay').textContent = data.esp32_ip;
+        updateVal('headerFps', data.fps.toFixed(1));
+        updateVal('deckObsRatio', data.obstacle_ratio.toFixed(1) + '%');
+        if ($('hudReason')) $('hudReason').textContent = data.reason;
 
         // Decision styling
         const isGo = data.decision === 1;
@@ -922,49 +1083,81 @@
         const corridorBadge = $('corridorBadge');
 
         if (isGo) {
-          badge.className = 'decision-badge go';
+          badge.className = 'status-badge-pill go';
           badge.innerHTML = '<span>🟢</span> <span>CLEAR (GO)</span>';
           deckDecision.textContent = 'GO';
-          deckDecision.className = 'data-value good';
-          corridorBadge.textContent = 'CLEAR';
-          corridorBadge.style.color = 'var(--emerald)';
+          deckDecision.style.color = 'var(--emerald-text)';
+          corridorBadge.textContent = 'Path Optimal';
+          corridorBadge.style.color = 'var(--emerald-text)';
         } else {
-          badge.className = 'decision-badge stop';
+          badge.className = 'status-badge-pill stop';
           badge.innerHTML = '<span>🛑</span> <span>OBSTACLE (STOP)</span>';
           deckDecision.textContent = 'STOP';
-          deckDecision.className = 'data-value danger';
-          corridorBadge.textContent = 'HAZARD';
-          corridorBadge.style.color = 'var(--rose)';
+          deckDecision.style.color = 'var(--rose-text)';
+          corridorBadge.textContent = 'Hazard Alert';
+          corridorBadge.style.color = 'var(--rose-text)';
         }
 
-        // Hazard Gauge
+        // Circular Donut Gauge
         const stopLimit = (data.config && data.config.stop_area_frac ? data.config.stop_area_frac * 100 : 3.0);
         const gaugePct = Math.min(100, Math.round((data.obstacle_ratio / stopLimit) * 100));
-        const gaugeFill = $('hazardGaugeFill');
-        gaugeFill.style.width = gaugePct + '%';
         $('hazardGaugeVal').textContent = `${data.obstacle_ratio.toFixed(1)}% / ${stopLimit.toFixed(1)}%`;
+        $('hazardRingText').textContent = `${gaugePct}%`;
 
-        if (gaugePct >= 100) gaugeFill.className = 'gauge-fill danger';
-        else if (gaugePct > 50) gaugeFill.className = 'gauge-fill warn';
-        else gaugeFill.className = 'gauge-fill';
+        // SVG circumference is 2 * PI * 30 ≈ 188.5
+        const offset = 188.5 - (188.5 * (gaugePct / 100));
+        $('hazardRingCircle').style.strokeDashoffset = offset;
 
-        // Hardware LED button states
+        // Flash and status LED active styles
         $('btnFlashToggle').classList.toggle('active', data.flash_on);
         $('btnStatusToggle').classList.toggle('active', data.status_on);
 
       } catch (err) {
-        $('statusDot').className = 'status-ping error';
-        $('statusText').textContent = 'Server Offline (Run python)';
-        $('headerFps').textContent = '0.0';
+        if ($('statusDot')) $('statusDot').style.background = 'var(--rose)';
+        if ($('statusText')) $('statusText').textContent = 'Server Offline (Start Python)';
+        if ($('headerFps')) $('headerFps').textContent = '0.0';
       }
     }
 
     setInterval(fetchStats, 600);
     fetchStats();
 
-    // ============================================================
-    // HARDWARE CONTROL COMMANDS
-    // ============================================================
+    // Firebase Atmosphere Poller
+    const FB_SENSOR_URL = "https://iotcaverobot-default-rtdb.asia-southeast1.firebasedatabase.app/sensor_readings.json?orderBy=%22%24key%22&limitToLast=1&auth=sNrMi7df7BewoNMtBQPOlIhMxTwNHhlmktyvISo5";
+
+    async function fetchAtmosphere() {
+      try {
+        const resp = await fetch(FB_SENSOR_URL, { cache: 'no-store' });
+        if (!resp.ok) return;
+        const data = await resp.json();
+        if (!data) return;
+        const readings = Object.values(data);
+        if (readings.length === 0) return;
+        const latest = readings[readings.length - 1];
+
+        const rawTemp = latest.temp !== undefined ? latest.temp : latest.temperature;
+        const rawHum = latest.humidity !== undefined ? latest.humidity : latest.hum;
+
+        if (rawTemp !== undefined && rawTemp !== null && rawTemp !== 'error') {
+          const t = parseFloat(rawTemp);
+          const tText = !isNaN(t) ? `${t.toFixed(1)}°C` : `${rawTemp}°C`;
+          updateVal('camHeaderTemp', tText);
+          if ($('sidebarTemp')) $('sidebarTemp').textContent = tText;
+        }
+
+        if (rawHum !== undefined && rawHum !== null && rawHum !== 'error') {
+          const h = parseFloat(rawHum);
+          const hText = !isNaN(h) ? `${h.toFixed(1)}%` : `${rawHum}%`;
+          updateVal('camHeaderHum', hText);
+          if ($('sidebarHum')) $('sidebarHum').textContent = hText;
+        }
+      } catch (err) {}
+    }
+
+    setInterval(fetchAtmosphere, 1000);
+    fetchAtmosphere();
+
+    // Control Commands
     async function sendControl(cmd) {
       try {
         const resp = await fetch(`${SERVER_URL}/api/control`, {
@@ -989,9 +1182,7 @@
     $('btnLedOff').addEventListener('click', () => sendControl('LED_OFF'));
     $('btnLedToggle').addEventListener('click', () => sendControl('LED_TOGGLE'));
 
-    // ============================================================
-    // VISION CALIBRATION SLIDERS
-    // ============================================================
+    // Vision Calibration Sliders
     const rngLowerH = $('rngLowerH');
     const rngUpperH = $('rngUpperH');
     const rngRoiTop = $('rngRoiTop');
@@ -1016,7 +1207,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
-        showToast('✓ Vision Calibration Saved');
+        showToast('✓ Calibration Saved Live');
       } catch (e) {
         showToast('❌ Failed to update vision config');
       }
@@ -1030,9 +1221,34 @@
       $('btnApplyConfig').click();
     });
 
-    // ============================================================
-    // SNAPSHOT CAPTURE
-    // ============================================================
+    // Hardware Source & IP
+    $('selCameraSource')?.addEventListener('change', async (e) => {
+      try {
+        await fetch(`${SERVER_URL}/api/config`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ camera_source: e.target.value })
+        });
+        showToast(`Camera: ${e.target.value.toUpperCase()}`);
+        videoImg.src = `${SERVER_URL}/video_feed?t=${Date.now()}`;
+      } catch (err) {}
+    });
+
+    $('btnUpdateIp')?.addEventListener('click', async () => {
+      const newIp = $('inputEspIp').value.trim();
+      if (!newIp) return;
+      try {
+        await fetch(`${SERVER_URL}/api/config`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ esp32_ip: newIp })
+        });
+        showToast(`IP set: ${newIp}`);
+        videoImg.src = `${SERVER_URL}/video_feed?t=${Date.now()}`;
+      } catch (err) {}
+    });
+
+    // Snapshot Capture
     $('btnSnapshot').addEventListener('click', () => {
       const canvas = document.createElement('canvas');
       canvas.width = videoImg.naturalWidth || 320;
@@ -1048,14 +1264,14 @@
         $('snapCount').textContent = snapshots.length;
         const gallery = $('snapshotGallery');
         gallery.innerHTML = snapshots.map((src, i) => `
-          <div class="gallery-item" onclick="downloadSnapshot('${src}', ${i})" title="Click to download image">
-            <img src="${src}" alt="Snapshot ${i+1}">
+          <div class="snap-item" onclick="downloadSnapshot('${src}', ${i})" title="Download">
+            <img src="${src}" alt="Snap ${i+1}">
           </div>
         `).join('');
 
         showToast('📸 Snapshot Saved to Gallery');
       } catch (e) {
-        showToast('⚠️ Click image directly or ensure server runs on http://');
+        showToast('⚠️ Click image or check server connection');
       }
     });
 
