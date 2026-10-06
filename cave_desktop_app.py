@@ -29,7 +29,7 @@ import webview
 # =====================================================================
 # CONFIGURATION — STRICTLY ALIGNED WITH arduinoclient1.py
 # =====================================================================
-ESP32_IP     = "10.151.173.130"     # ESP32-CAM IP
+ESP32_IP     = "10.151.173.181"     # ESP32-CAM IP (from arduinoclientnew.py)
 ARDUINO_IP   = "10.151.173.226"     # Arduino UNO R4 WiFi IP
 
 LISTEN_PORT  = 4210                 # ESP32 sends JPEG fragments here
@@ -37,6 +37,12 @@ CTRL_PORT    = 4211                 # ESP32 LED control (LED_ON / LED_OFF / LED_
 ARDUINO_PORT = 4212                 # Arduino vision decision sink
 VISION_MAGIC = 0xC8                 # Must match Arduino sketch (200 decimal)
 SEND_INTERVAL= 0.033                # Max 30 Hz to Arduino
+
+# Vision Packet Command Codes (strictly matching car_firmware.ino)
+VISION_CMD_HAZARD_STOP = 0   # AI sees an obstacle -> temporary brake
+VISION_CMD_HAZARD_GO   = 1   # Corridor clear      -> resume
+VISION_CMD_OP_STOP     = 2   # STOP button         -> latch motors OFF (DISARM)
+VISION_CMD_OP_START    = 3   # START button        -> latch motors ON (ARM)
 
 # Reassembly parameters
 MAX_PAYLOAD  = 1400
@@ -76,6 +82,7 @@ state = {
     "frames_received": 0,
     "tx_packets": 0,
     "arduino_seq": 0,
+    "drive_armed": False,
     "running": True
 }
 
@@ -112,6 +119,34 @@ def send_esp_cmd(cmd: str) -> bool:
     except Exception as e:
         print(f"[CTRL ERR] {e}")
         return False
+
+def send_operator_command(cmd_code: int):
+    """Send immediate operator START/STOP command burst (3 packets) to Arduino UNO R4."""
+    global arduino_seq, sent_packets
+    with lock:
+        arduino_seq = (arduino_seq + 1) & 0xFF
+        seq = arduino_seq
+        if cmd_code == VISION_CMD_OP_START:
+            state["drive_armed"] = True
+        elif cmd_code == VISION_CMD_OP_STOP:
+            state["drive_armed"] = False
+
+    # Packet format: [MAGIC, CMD_CODE, CONFIDENCE, SEQ]
+    pkt = bytes([VISION_MAGIC, cmd_code & 0xFF, 100, seq])
+    for _ in range(3):
+        try:
+            arduino_sock.sendto(pkt, (config["arduino_ip"], ARDUINO_PORT))
+            sent_packets += 1
+        except Exception as e:
+            print(f"[OP ERR] {e}")
+        time.sleep(0.004)
+
+    with lock:
+        state["tx_packets"] = sent_packets
+        state["arduino_seq"] = seq
+
+    name = "START (ARM MOTORS)" if cmd_code == VISION_CMD_OP_START else "STOP (DISARM / BRAKE)"
+    print(f"[OPERATOR] >>> {name} (code={cmd_code}, seq={seq}) -> {config['arduino_ip']}:{ARDUINO_PORT} <<<")
 
 def send_vision_decision(decision: int, confidence: int = 100):
     """Send binary decision packet to Arduino UNO R4 WiFi over UDP (from arduinoclient1.py)."""
@@ -454,6 +489,7 @@ def api_stats():
             "frames_total": state["frames_received"],
             "flash_on": state["flash_state"],
             "status_on": state["status_led"],
+            "drive_armed": state.get("drive_armed", False),
             "esp32_ip": config["esp32_ip"],
             "arduino_ip": config["arduino_ip"],
             "tx_packets": state["tx_packets"],
@@ -484,16 +520,25 @@ def api_control():
 @app.route('/api/robot_command', methods=['POST'])
 def api_robot_command():
     data = request.get_json(force=True) or {}
-    cmd = data.get("command", "")
-    char = data.get("char", "")
+    cmd = str(data.get("command", "")).strip().lower()
+    char = str(data.get("char", "")).strip().lower()
     print(f"[CMD] Robot command received: '{cmd}' (char='{char}')")
 
-    if cmd in ("stop", "s"):
-        send_vision_decision(0, 100)
-    elif cmd in ("forward", "fwd", "f"):
-        send_vision_decision(1, 100)
+    if cmd in ("start", "forward", "fwd", "f", "arm", "run") or char in ("f", "w"):
+        send_operator_command(VISION_CMD_OP_START)
+        send_vision_decision(VISION_CMD_HAZARD_GO, 100)
+    elif cmd in ("stop", "s", "brake", "disarm", "halt") or char in ("s", " "):
+        send_operator_command(VISION_CMD_OP_STOP)
+        send_vision_decision(VISION_CMD_HAZARD_STOP, 100)
+    elif cmd in ("hazard_stop",):
+        send_vision_decision(VISION_CMD_HAZARD_STOP, 100)
+    elif cmd in ("hazard_go",):
+        send_vision_decision(VISION_CMD_HAZARD_GO, 100)
 
-    return jsonify({"success": True, "command": cmd, "char": char})
+    with lock:
+        armed = state.get("drive_armed", False)
+
+    return jsonify({"success": True, "command": cmd, "char": char, "drive_armed": armed})
 
 @app.route('/api/config', methods=['GET', 'POST'])
 def api_config():
@@ -514,6 +559,10 @@ def serve_cam_dashboard():
 def serve_cave_dashboard():
     return send_from_directory(BASE_DIR, "cave-ai.html")
 
+@app.route('/<path:filename>')
+def serve_static(filename):
+    return send_from_directory(BASE_DIR, filename)
+
 # =====================================================================
 # APPLICATION ENTRYPOINT & NATIVE DESKTOP WINDOW LAUNCHER
 # =====================================================================
@@ -526,8 +575,8 @@ def on_window_closed():
 
 def main():
     print("=" * 70)
-    print("  CAVE EXPLORER AI · TACTICAL DESKTOP MISSION CONTROL")
-    print("  [MR. ROBOT FSOCIETY EDITION - FULL PYTHON DESKTOP APP]")
+    print("  SENTINEL-MINE · THE CAVE EXPLORER ROBOT")
+    print("  TACTICAL MISSION CONTROL")
     print("=" * 70)
     print(f"  ESP32-CAM Source    : {config['esp32_ip']}:{LISTEN_PORT}")
     print(f"  Arduino Decision Sink: {config['arduino_ip']}:{ARDUINO_PORT}")
@@ -546,7 +595,7 @@ def main():
 
     # 3. Create native desktop application window with pywebview
     window = webview.create_window(
-        title="CAVE EXPLORER AI · TACTICAL VISION & SLAM HUD [MR. ROBOT FSOCIETY]",
+        title="Sentinel-Mine the Cave Explorer Robot",
         url="http://127.0.0.1:5000/cam-dashboard.html",
         width=1440,
         height=900,

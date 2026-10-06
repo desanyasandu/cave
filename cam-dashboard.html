@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cave Explorer AI · Vision Operations</title>
+  <title>Sentinel-Mine the Cave Explorer Robot</title>
+  <link rel="icon" type="image/jpeg" href="favicon.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -749,10 +750,10 @@
   <aside class="sidebar">
     <div>
       <div class="brand-header">
-        <div class="brand-logo">🤖</div>
+        <div class="brand-logo" style="overflow:hidden;"><img src="favicon.jpg" alt="Sentinel-Mine" style="width:100%;height:100%;object-fit:cover;"></div>
         <div class="brand-name">
-          CaveAI
-          <span>Mission Ops</span>
+          Sentinel-Mine
+          <span>the Cave Explorer Robot</span>
         </div>
       </div>
 
@@ -817,6 +818,14 @@
         <div class="stat-chip">
           <span class="label">HUM</span>
           <span class="val" id="camHeaderHum" style="color:#0284c7;">--.-%</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; margin-left:8px;">
+          <button id="headerBtnStart" style="background:#10b981; color:#ffffff; font-weight:700; border:none; border-radius:18px; padding:7px 16px; cursor:pointer; font-size:12px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(16,185,129,0.35); transition:transform 0.1s;" title="Start Rover Motors [Hotkey: W or F]">
+            ▶ START
+          </button>
+          <button id="headerBtnStop" style="background:#ef4444; color:#ffffff; font-weight:700; border:none; border-radius:18px; padding:7px 16px; cursor:pointer; font-size:12px; display:inline-flex; align-items:center; gap:6px; box-shadow:0 2px 8px rgba(239,68,68,0.35); transition:transform 0.1s;" title="Emergency Stop Motors [Hotkey: SPACE or S]">
+            ⏹ STOP
+          </button>
         </div>
       </div>
     </header>
@@ -905,11 +914,20 @@
               <div class="status-badge-pill go" id="decisionBadge">
                 <span>🟢</span> <span id="decisionText">CLEAR (GO)</span>
               </div>
+              <div class="status-badge-pill" id="armedBadge" style="background:#fee2e2; color:#b91c1c; border:1px solid #fca5a5;">
+                <span>🔒</span> <span id="armedText">LOCKED (STOP)</span>
+              </div>
               <div class="hud-chip" id="hudReason">Corridor Clear</div>
             </div>
 
             <!-- FLOATING QUICK CONTROLS -->
             <div class="video-quick-controls">
+              <button class="quick-pill-btn" id="btnRoverStart" style="background:#10b981; color:#ffffff; font-weight:700; border:none; box-shadow:0 2px 8px rgba(16,185,129,0.35);" title="Start / Arm Rover Motors [Hotkey: W]">
+                <span>▶</span> START
+              </button>
+              <button class="quick-pill-btn" id="btnRoverStop" style="background:#ef4444; color:#ffffff; font-weight:700; border:none; box-shadow:0 2px 8px rgba(239,68,68,0.35);" title="Emergency Stop Motors [Hotkey: SPACE]">
+                <span>⏹</span> STOP
+              </button>
               <button class="quick-pill-btn flash" id="btnFlashToggle" title="Toggle ESP32 Flashlight">
                 <span>⚡</span> Flashlight
               </button>
@@ -927,6 +945,25 @@
 
       <!-- RIGHT DECK (HARDWARE + CV TUNER + SNAPSHOTS) -->
       <aside class="right-deck">
+
+        <!-- Mission Control: Drive Arm & Stop Widget -->
+        <div class="deck-widget-card" style="border: 1.5px solid #e2e8f0; background: linear-gradient(180deg, #ffffff, #f8fafc);">
+          <div class="widget-title">
+            <span>Mission Control</span>
+            <span class="tag-badge" id="cardArmedBadge" style="background:#fee2e2; color:#b91c1c;">LOCKED</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted); margin-bottom:10px;">
+            Drive latch locks motors safe at boot. START arms drive & begins exploration; STOP locks motors instantly.
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+            <button class="skillio-btn" id="deckBtnStart" style="background:#10b981; color:#fff; font-weight:700; padding:10px 8px; border-radius:8px; border:none; cursor:pointer;">
+              ▶ START (ARM)
+            </button>
+            <button class="skillio-btn" id="deckBtnStop" style="background:#ef4444; color:#fff; font-weight:700; padding:10px 8px; border-radius:8px; border:none; cursor:pointer;">
+              ⏹ STOP (LOCK)
+            </button>
+          </div>
+        </div>
 
         <!-- Hardware & IP Config Widget -->
         <div class="deck-widget-card">
@@ -950,6 +987,14 @@
             <div style="display:flex; gap:6px;">
               <input type="text" id="inputEspIp" value="10.151.173.130" style="flex:1; border:1px solid var(--border-card); border-radius:8px; padding:6px 10px; font-family:'JetBrains Mono', monospace; font-size:11px; outline:none;">
               <button class="skillio-btn primary" id="btnUpdateIp" style="padding:6px 12px; flex:initial;">Set</button>
+            </div>
+          </div>
+
+          <div class="control-field">
+            <label class="field-label">Target Arduino UNO IP</label>
+            <div style="display:flex; gap:6px;">
+              <input type="text" id="inputArduinoIp" value="10.151.173.226" style="flex:1; border:1px solid var(--border-card); border-radius:8px; padding:6px 10px; font-family:'JetBrains Mono', monospace; font-size:11px; outline:none;">
+              <button class="skillio-btn primary" id="btnUpdateArduinoIp" style="padding:6px 12px; flex:initial;">Set</button>
             </div>
           </div>
 
@@ -1108,6 +1153,9 @@
         const offset = 188.5 - (188.5 * (gaugePct / 100));
         $('hazardRingCircle').style.strokeDashoffset = offset;
 
+        // Update live drive armed state
+        updateArmedUI(Boolean(data.drive_armed));
+
         // Flash and status LED active styles
         $('btnFlashToggle').classList.toggle('active', data.flash_on);
         $('btnStatusToggle').classList.toggle('active', data.status_on);
@@ -1118,6 +1166,88 @@
         if ($('headerFps')) $('headerFps').textContent = '0.0';
       }
     }
+
+    // UI updater for motor safety latch
+    function updateArmedUI(isArmed) {
+      const armedBadge = $('armedBadge');
+      const armedText = $('armedText');
+      const cardArmedBadge = $('cardArmedBadge');
+      const btnRoverStart = $('btnRoverStart');
+      const btnRoverStop = $('btnRoverStop');
+
+      if (isArmed) {
+        if (armedBadge) {
+          armedBadge.style.background = '#ecfdf5';
+          armedBadge.style.color = '#059669';
+          armedBadge.style.border = '1px solid #a7f3d0';
+        }
+        if (armedText) armedText.textContent = 'ARMED (RUNNING)';
+        if (cardArmedBadge) {
+          cardArmedBadge.style.background = '#ecfdf5';
+          cardArmedBadge.style.color = '#059669';
+          cardArmedBadge.textContent = 'ARMED · RUNNING';
+        }
+        if (btnRoverStart) btnRoverStart.style.opacity = '0.6';
+        if (btnRoverStop) btnRoverStop.style.opacity = '1.0';
+        if ($('headerBtnStart')) $('headerBtnStart').style.opacity = '0.6';
+        if ($('headerBtnStop')) $('headerBtnStop').style.opacity = '1.0';
+      } else {
+        if (armedBadge) {
+          armedBadge.style.background = '#fee2e2';
+          armedBadge.style.color = '#b91c1c';
+          armedBadge.style.border = '1px solid #fca5a5';
+        }
+        if (armedText) armedText.textContent = 'LOCKED (STOP)';
+        if (cardArmedBadge) {
+          cardArmedBadge.style.background = '#fee2e2';
+          cardArmedBadge.style.color = '#b91c1c';
+          cardArmedBadge.textContent = 'LOCKED · SAFE';
+        }
+        if (btnRoverStart) btnRoverStart.style.opacity = '1.0';
+        if (btnRoverStop) btnRoverStop.style.opacity = '0.6';
+        if ($('headerBtnStart')) $('headerBtnStart').style.opacity = '1.0';
+        if ($('headerBtnStop')) $('headerBtnStop').style.opacity = '0.6';
+      }
+    }
+
+    // Dispatch Start/Stop to Python backend & Arduino UNO R4 WiFi
+    async function sendRoverCommand(cmd, char) {
+      try {
+        const resp = await fetch(`${SERVER_URL}/api/robot_command`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ command: cmd, char: char, timestamp: Date.now() })
+        });
+        const res = await resp.json();
+        if (res.drive_armed) {
+          showToast('▶ START (ARM) — MOTORS ENABLED');
+        } else {
+          showToast('⏹ STOP (DISARM) — MOTORS LOCKED');
+        }
+        updateArmedUI(res.drive_armed);
+      } catch (err) {
+        showToast('❌ Command dispatch failed');
+      }
+    }
+
+    $('btnRoverStart')?.addEventListener('click', () => sendRoverCommand('start', 'f'));
+    $('btnRoverStop')?.addEventListener('click', () => sendRoverCommand('stop', 's'));
+    $('deckBtnStart')?.addEventListener('click', () => sendRoverCommand('start', 'f'));
+    $('deckBtnStop')?.addEventListener('click', () => sendRoverCommand('stop', 's'));
+    $('headerBtnStart')?.addEventListener('click', () => sendRoverCommand('start', 'f'));
+    $('headerBtnStop')?.addEventListener('click', () => sendRoverCommand('stop', 's'));
+
+    // Global Hotkeys: W/F for START, SPACE/S for STOP
+    window.addEventListener('keydown', (e) => {
+      if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+      if (e.key === ' ' || e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        sendRoverCommand('stop', 's');
+      } else if (e.key.toLowerCase() === 'w' || e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        sendRoverCommand('start', 'f');
+      }
+    });
 
     setInterval(fetchStats, 600);
     fetchStats();
@@ -1243,8 +1373,21 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ esp32_ip: newIp })
         });
-        showToast(`IP set: ${newIp}`);
+        showToast(`ESP32 IP set: ${newIp}`);
         videoImg.src = `${SERVER_URL}/video_feed?t=${Date.now()}`;
+      } catch (err) {}
+    });
+
+    $('btnUpdateArduinoIp')?.addEventListener('click', async () => {
+      const newIp = $('inputArduinoIp').value.trim();
+      if (!newIp) return;
+      try {
+        await fetch(`${SERVER_URL}/api/config`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ arduino_ip: newIp })
+        });
+        showToast(`Arduino IP set: ${newIp}`);
       } catch (err) {}
     });
 

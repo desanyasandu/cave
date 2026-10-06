@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cave Explorer AI · SLAM Mission Operations</title>
+  <title>Sentinel-Mine the Cave Explorer Robot</title>
+  <link rel="icon" type="image/jpeg" href="favicon.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -823,10 +824,10 @@
   <aside class="sidebar">
     <div>
       <div class="brand-header">
-        <div class="brand-logo">🤖</div>
+        <div class="brand-logo" style="overflow:hidden;"><img src="favicon.jpg" alt="Sentinel-Mine" style="width:100%;height:100%;object-fit:cover;"></div>
         <div class="brand-name">
-          CaveAI
-          <span>Mission Ops</span>
+          Sentinel-Mine
+          <span>the Cave Explorer Robot</span>
         </div>
       </div>
 
@@ -903,6 +904,14 @@
         </div>
         <button class="icon-hud-btn" id="hudZenBtn" title="Toggle Minimal HUD">HUD</button>
         <button class="icon-hud-btn active" id="deckToggleBtn" title="Toggle Telemetry Deck">DATA</button>
+        <div style="display:flex; align-items:center; gap:6px; margin-left:8px;">
+          <button class="cmd-btn start" data-cmd="start" id="caveHeaderStart" style="background:#10b981; color:#fff; border:none; border-radius:18px; padding:6px 14px; font-weight:700; cursor:pointer; font-size:12px; display:inline-flex; align-items:center; gap:4px; box-shadow:0 2px 8px rgba(16,185,129,0.35);" title="Arm & Start Motors [Hotkey: F]">
+            ▶ START
+          </button>
+          <button class="cmd-btn stop" data-cmd="stop" id="caveHeaderStop" style="background:#ef4444; color:#fff; border:none; border-radius:18px; padding:6px 14px; font-weight:700; cursor:pointer; font-size:12px; display:inline-flex; align-items:center; gap:4px; box-shadow:0 2px 8px rgba(239,68,68,0.35);" title="Emergency Stop Motors [Hotkey: SPACE]">
+            ⏹ STOP
+          </button>
+        </div>
       </div>
     </header>
 
@@ -1099,6 +1108,9 @@
       <!-- TACTICAL COMMAND DOCK -->
       <footer class="command-bar" aria-label="Robot controls">
         <div class="cmd-group" aria-label="Motion controls">
+          <button class="cmd-btn start" data-cmd="start" style="border-color:#10b981; color:#10b981; font-weight:800; background:rgba(16,185,129,0.15);" title="Arm and start rover motors [Hotkey: F]">
+            START <kbd>F</kbd>
+          </button>
           <button class="cmd-btn" data-cmd="turn_left" title="Steer rover left [Hotkey: Q]">
             LEFT <kbd>Q</kbd>
           </button>
@@ -1666,6 +1678,7 @@
     const CMD_CHAR_MAP = {
       'forward': 'f',
       'fwd': 'f',
+      'start': 'f',
       'stop': 's',
       'turn_left': 'q',
       'turn_right': 'e',
@@ -1683,14 +1696,21 @@
       let sentSuccess = false;
       const t0 = performance.now();
 
-      // 1. Dispatch to local desktop backend if running
-      try {
-        fetch('/api/robot_command', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ command: cmd, char: charCode, timestamp: Date.now() })
-        }).then(r => { if (r.ok) sentSuccess = true; }).catch(() => {});
-      } catch (e) {}
+      // 1. Dispatch to local desktop backend (try localhost:5000 first, then relative)
+      const desktopEndpoints = ['http://127.0.0.1:5000/api/robot_command', '/api/robot_command'];
+      for (const ep of desktopEndpoints) {
+        try {
+          const r = await fetch(ep, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ command: cmd, char: charCode, timestamp: Date.now() })
+          });
+          if (r.ok) {
+            sentSuccess = true;
+            break;
+          }
+        } catch (e) {}
+      }
 
       // 2. Dispatch to Firebase Cloud RTDB
       try {
@@ -1703,7 +1723,7 @@
         if ($('networkPingVal')) $('networkPingVal').textContent = latency + 'ms';
 
         if (resp.ok) {
-          showToast(`'${charCode}' [${cmd.toUpperCase()}] SENT`, 'success');
+          showToast(`'${charCode}' [${cmd.toUpperCase()}] TRANSMITTED`, 'success');
           return true;
         }
       } catch (err) {
@@ -1711,10 +1731,10 @@
       }
 
       if (sentSuccess) {
-        showToast(`'${charCode}' [${cmd.toUpperCase()}] LOCAL DISPATCH`, 'success');
+        showToast(`'${charCode}' [${cmd.toUpperCase()}] MOTORS ${cmd === 'stop' ? 'LOCKED' : 'ARMED'}`, 'success');
         return true;
       }
-      showToast(`'${charCode}' [${cmd.toUpperCase()}] TRANSMITTED`, 'info');
+      showToast(`'${charCode}' [${cmd.toUpperCase()}] DISPATCHED`, 'info');
       return true;
     }
 
@@ -2128,7 +2148,11 @@
         const manBtn = document.querySelector('[data-cmd="manual"]');
         if (manBtn) manBtn.click();
       }
-      if (e.key === 'f' || e.key === 'F' || e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') {
+      if (e.key === 'f' || e.key === 'F') {
+        const startBtn = document.querySelector('[data-cmd="start"]');
+        if (startBtn) startBtn.click();
+      }
+      if (e.key === 'w' || e.key === 'W' || e.key === 'ArrowUp') {
         const fwdBtn = document.querySelector('[data-cmd="forward"]');
         if (fwdBtn) fwdBtn.click();
       }
